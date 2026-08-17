@@ -1,0 +1,214 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Закупки АО «Самрук-Қазына»: порядок, процессы и практика</title>
+<meta name="description" content="Интерактивный учебный портал по работе с zakup.sk.kz: планирование закупок, реестры, выбор поставщика, управление договорами и изменения Порядка закупок АО «Самрук-Қазына». ТОО «Самрук-Қазына Контракт».">
+<link rel="stylesheet" href="assets/css/styles.css">
+</head>
+<body>
+<a href="#main" class="skip-link">Перейти к содержанию</a>
+<div id="scroll-progress"></div>
+
+<header class="site-header">
+  <div class="container">
+    <button class="menu-toggle" id="menu-toggle" aria-label="Открыть меню разделов" aria-expanded="false">
+      <svg class="icon" viewBox="0 0 24 24"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+    </button>
+    <div class="brand">
+      <span class="brand-org">ТОО «Самрук-Қазына Контракт» · Департамент сопровождения ИСЭЗ</span>
+      <span class="brand-title">Закупки АО «Самрук-Қазына»: порядок, процессы и практика</span>
+    </div>
+    <div class="header-actions">
+      <button class="btn-header" id="search-open" aria-haspopup="dialog" aria-label="Поиск">
+        <svg class="icon" style="width:15px;height:15px" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <span class="btn-label">Поиск</span> <kbd>/</kbd>
+      </button>
+      <button class="btn-header" id="present-open" aria-label="Режим презентации">
+        <svg class="icon" style="width:15px;height:15px" viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+        <span class="btn-label">Презентация</span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<div class="sidebar-backdrop" id="sidebar-backdrop"></div>
+
+<div class="layout container">
+  <nav class="sidebar" id="sidebar" aria-label="Навигация по разделам">
+    <div class="sidebar-group">
+      <a href="#hero">Главная</a>
+      <a href="#order-overview">О Порядке</a>
+    </div>
+    <div class="sidebar-group">
+      <div class="sidebar-group-title">Учебные разделы</div>
+      <a href="#planning">Планирование закупок</a>
+      <a href="#registries">Реестры и перечни</a>
+      <a href="#supplier-selection">Выбор поставщика</a>
+      <a href="#contract-management">Управление договорами</a>
+      <a href="#final-provisions">Заключительные положения</a>
+    </div>
+    <div class="sidebar-group">
+      <a href="#changes">Изменения Порядка</a>
+      <a href="#quiz">Проверка знаний</a>
+      <a href="#lecturer">О лекторе</a>
+    </div>
+    <div class="sidebar-group">
+      <div class="sidebar-group-title">Справка</div>
+      <a href="#glossary">Словарь терминов</a>
+    </div>
+    <div class="sidebar-group">
+      <div class="sidebar-group-title">Ваш прогресс</div>
+      <div class="progress-widget" id="sidebar-progress"></div>
+    </div>
+  </nav>
+
+  <main class="main-col" id="main">
+
+    <!-- ===================== ГЛАВНАЯ ===================== -->
+    <section class="hero" id="hero">
+      <div class="hero-rail reveal">
+        <span class="rail-line" aria-hidden="true"></span>
+        <div class="hero-org mono">ТОО «Самрук-Қазына Контракт» · Лектор: Айып А.</div>
+      </div>
+      <h1 class="reveal">Закупки АО «Самрук-Қазына»: <span class="hero-accent">порядок, процессы и практика</span></h1>
+      <p class="hero-sub reveal">Интерактивный учебный портал по работе с <a href="https://zakup.sk.kz" target="_blank" rel="noopener">zakup.sk.kz</a> — планирование, реестры, выбор поставщика, договоры и актуальные изменения Порядка закупок АО «Самрук-Қазына».</p>
+
+      <p class="reveal" style="max-width:720px;font-size:.95rem">Портал закупок zakup.sk.kz функционирует на основании Порядка осуществления закупок акционерным обществом «Фонд национального благосостояния «Самрук-Қазына» и юридическими лицами, пятьдесят и более процентов голосующих акций (долей участия) которых прямо или косвенно принадлежат АО «Самрук-Қазына» на праве собственности или доверительного управления. Учебные материалы подготовлены в соответствии с актуальной редакцией Порядка с учётом утверждённых изменений и дополнений.</p>
+
+      <div class="hero-warning reveal">
+        <svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        <p>Портал имеет учебно-информационный характер и не заменяет официальный веб-портал закупок или официальную редакцию нормативного документа. При проведении закупок необходимо руководствоваться действующей редакцией Порядка и документами, размещёнными в официальных источниках.</p>
+      </div>
+
+      <div class="hero-cta-row reveal">
+        <a href="#order-overview" class="btn-cta">Изучить Порядок
+          <svg class="icon" style="width:16px;height:16px;stroke:#04121c" viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        </a>
+        <a href="#planning" class="btn-ghost">Начать обучение</a>
+        <a href="#changes" class="btn-ghost">Последние изменения</a>
+        <a href="#quiz" class="btn-ghost">Пройти тест</a>
+      </div>
+
+      <div class="hero-kpis reveal" id="hero-kpis"></div>
+    </section>
+
+    <section class="section" id="process-map-section">
+      <div class="section-head reveal">
+        <div class="eyebrow">Жизненный цикл</div>
+        <h2>Карта закупочного процесса</h2>
+        <p>Кликните на этап, чтобы увидеть краткое пояснение и перейти в соответствующий учебный раздел.</p>
+      </div>
+      <div class="process-map reveal" id="process-map"></div>
+      <div class="map-detail" id="map-detail">Выберите этап выше, чтобы узнать подробности.</div>
+    </section>
+
+    <section class="section section--alt" id="navigator">
+      <div class="section-head reveal">
+        <div class="eyebrow">Навигация</div>
+        <h2>Что вы хотите изучить?</h2>
+      </div>
+      <div class="grid grid-3" id="navigator-grid"></div>
+    </section>
+
+    <!-- ===================== О ПОРЯДКЕ ===================== -->
+    <section class="section" id="order-overview">
+      <div class="section-head reveal">
+        <div class="eyebrow">О документе</div>
+        <h2>О Порядке осуществления закупок</h2>
+        <p>Ключевые сведения о нормативном документе, на основании которого работает портал закупок zakup.sk.kz.</p>
+      </div>
+      <div class="grid grid-3 reveal" id="order-cards"></div>
+
+      <div class="reveal" style="margin-top:56px">
+        <h3>Хронология редакций</h3>
+        <p>Порядок утверждён решением Совета директоров АО «Самрук-Қазына» и с момента утверждения регулярно обновляется. Ниже — история изменений вплоть до последнего решения.</p>
+        <div class="timeline-track" id="timeline" style="margin-top:24px"></div>
+      </div>
+    </section>
+
+    <!-- ===================== 5 УЧЕБНЫХ РАЗДЕЛОВ (рендерятся из modules.json) ===================== -->
+    <div id="modules-root"></div>
+
+    <!-- ===================== ИЗМЕНЕНИЯ ПОРЯДКА ===================== -->
+    <section class="section section--alt" id="changes">
+      <div class="section-head reveal">
+        <div class="eyebrow">Актуализация</div>
+        <h2>Изменения Порядка</h2>
+        <p>Утверждённые решениями Совета директоров изменения отделены от рабочих проектных предложений, которые ещё не приняты и промаркированы как «Проект изменения».</p>
+      </div>
+      <div class="changes-toolbar reveal" id="changes-filters"></div>
+      <div class="reveal" id="changes-list"></div>
+    </section>
+
+    <!-- ===================== ПРОВЕРКА ЗНАНИЙ ===================== -->
+    <section class="section" id="quiz">
+      <div class="section-head reveal">
+        <div class="eyebrow">Самопроверка</div>
+        <h2>Проверка знаний</h2>
+        <p>10 вопросов по структуре Порядка и актуальным изменениям. Правильный ответ подсвечивается зелёным, неправильный — красным.</p>
+      </div>
+      <div class="reveal" id="quiz-root"></div>
+    </section>
+
+    <!-- ===================== О ЛЕКТОРЕ ===================== -->
+    <section class="section section--alt" id="lecturer">
+      <div class="section-head reveal">
+        <div class="eyebrow">Автор курса</div>
+        <h2>О лекторе</h2>
+      </div>
+      <div class="lecturer-hero reveal">
+        <div class="lecturer-photo">АА</div>
+        <div>
+          <h3 style="margin-bottom:4px">Айып А.</h3>
+          <p class="mono" style="color:var(--cyan);font-size:.82rem;margin-bottom:12px">ТОО «Самрук-Қазына Контракт» · Департамент сопровождения ИСЭЗ</p>
+          <p style="max-width:600px">Ведёт лекции и практические разборы Порядка осуществления закупок АО «Самрук-Қазына» для заказчиков, организаторов закупок, специалистов по закупкам и потенциальных поставщиков. В каждом учебном разделе портала — комментарии, основанные на практике сопровождения закупочных процедур.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== СЛОВАРЬ ===================== -->
+    <section class="section" id="glossary">
+      <div class="section-head reveal">
+        <div class="eyebrow">Справка</div>
+        <h2>Словарь терминов</h2>
+        <p>Основные понятия из статьи 2 Порядка — определения приведены в действующей редакции.</p>
+      </div>
+      <div class="search-box reveal">
+        <svg class="icon ic" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input type="search" id="glossary-search" placeholder="Найти термин…" aria-label="Поиск по словарю">
+      </div>
+      <div class="glossary-grid reveal" id="glossary-list"></div>
+    </section>
+
+  </main>
+</div>
+
+<footer class="site-footer">
+  <div class="container">
+    <span>© ТОО «Самрук-Қазына Контракт», Департамент сопровождения ИСЭЗ, 2026</span>
+    <span>Учебно-информационный портал. Официальный источник — zakup.sk.kz и действующая редакция Порядка.</span>
+  </div>
+</footer>
+
+<button class="back-to-top" id="back-to-top" aria-label="Наверх">
+  <svg class="icon" viewBox="0 0 24 24"><line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/></svg>
+</button>
+
+<button class="present-toggle" id="present-close">
+  <svg class="icon" style="width:15px;height:15px" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+  Выйти из презентации (Esc)
+</button>
+<div class="present-hint">← → навигация по разделам</div>
+
+<div class="search-modal" id="search-modal" role="dialog" aria-modal="true" aria-label="Поиск по Порядку">
+  <div class="search-panel">
+    <input type="search" id="global-search-input" placeholder="Поиск по статьям, изменениям, словарю…" aria-label="Поиск">
+    <div class="search-results" id="global-search-results"></div>
+  </div>
+</div>
+
+<script type="module" src="assets/js/main.js"></script>
+</body>
+</html>

@@ -590,10 +590,37 @@
   .dark-card h4{color:#fff;}
 
   .hrail{gap:10px;background:transparent;border:none;}
-  .hrail>div{border-radius:17px;background:linear-gradient(145deg,#0a2130,#102f40);padding:28px 24px;border:1px solid rgba(240,200,120,.14);box-shadow:var(--shadow-soft);}
-  .hrail .step-no{font-size:34px;}
+  .hrail>div{border-radius:17px;background:linear-gradient(145deg,#0a2130,#102f40);padding:28px 24px;border:1px solid rgba(240,200,120,.14);box-shadow:var(--shadow-soft);cursor:pointer;transition:transform .28s ease,box-shadow .28s ease,border-color .28s ease;}
+  .hrail>div:hover,.hrail>div:focus-visible{transform:translateY(-5px);box-shadow:0 26px 54px -30px rgba(0,0,0,.55);border-color:rgba(240,200,120,.4);outline:none;}
+  .hrail>div:hover .step-no{color:#fff;}
+  .hrail .step-no{font-size:34px;transition:color .25s ease;}
   .hrail h4{font-size:18px;}
   .hrail ul{font-size:13.2px;line-height:1.55;}
+  .hrail-go{display:inline-block;margin-top:14px;font-family:SFMono-Regular,Consolas,'Liberation Mono',Menlo,monospace;font-size:11px;letter-spacing:.04em;color:var(--brass-light);opacity:0;transform:translateX(-4px);transition:opacity .22s ease,transform .22s ease;}
+  .hrail>div:hover .hrail-go,.hrail>div:focus-visible .hrail-go{opacity:1;transform:translateX(0);}
+
+  /* clickable radar items */
+  .radar-item{cursor:pointer;transition:transform .25s ease,box-shadow .25s ease,border-color .25s ease;}
+  .radar-item:hover,.radar-item:focus-visible{transform:translateY(-4px);box-shadow:0 24px 48px -30px rgba(7,24,36,.4);border-color:rgba(201,148,66,.5);outline:none;}
+
+  /* click-to-copy */
+  .copy-code{transition:box-shadow .2s ease,transform .12s ease;}
+  .copy-code:hover{box-shadow:0 0 0 1px rgba(240,200,120,.5);}
+  .copy-code:active{transform:scale(.98);}
+  .copy-hint{position:absolute;right:12px;top:50%;transform:translateY(-50%);font-family:SFMono-Regular,Consolas,'Liberation Mono',Menlo,monospace;font-size:9.5px;letter-spacing:.06em;text-transform:uppercase;color:rgba(240,200,120,.55);opacity:0;transition:opacity .2s ease;pointer-events:none;}
+  .copy-code:hover .copy-hint{opacity:1;}
+  footer .contact-card a.copy-code .copy-hint{display:none;}
+
+  /* toast */
+  #toast{position:fixed;left:50%;bottom:34px;transform:translateX(-50%) translateY(20px);background:var(--navy-950);color:var(--brass-light);border:1px solid var(--brass);padding:11px 20px;border-radius:999px;font-family:SFMono-Regular,Consolas,'Liberation Mono',Menlo,monospace;font-size:12.5px;letter-spacing:.02em;box-shadow:var(--shadow);z-index:2500;opacity:0;pointer-events:none;transition:opacity .25s ease,transform .25s ease;display:flex;align-items:center;gap:8px;}
+  #toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+  #toast svg{color:#30a477;flex:none;}
+
+  /* count-up numbers */
+  .stat-seal .num,.memory-strip .big{transition:opacity .3s ease;}
+
+  /* tilt-on-hover cards */
+  .card,.radar-item{transform-style:preserve-3d;will-change:transform;}
   .timeline{padding-left:38px;max-width:1040px;}
   .timeline::before{left:10px;width:2px;background:linear-gradient(var(--brass),rgba(201,148,66,.18));}
   .tstep{padding:4px 0 30px 5px;}
@@ -837,10 +864,6 @@
     <!-- ============ SEMINAR PROGRAM ============ -->
     <section class="program" id="program">
       <div class="program-inner">
-        <div class="verification-strip">
-          <span class="verify-dot"></span>
-          <span><b>Материал актуализирован</b> · сверено по консолидированной версии Порядка 2.17, ред. 30.04.2026 (СД №274)</span>
-        </div>
         <span class="eyebrow">Обучающий семинар · ТОО «Самрук-Казына Контракт» · ИСЭЗ</span>
         <h2>Программа семинара</h2>
         <p class="sub">Порядок осуществления закупок Фонда: от планирования и выбора способа до заключения договора, исполнения обязательств и ключевых изменений 2026 года.</p>
@@ -896,7 +919,7 @@
         <h2>Три этапа закупки</h2>
       </div>
       <div class="hrail">
-        <div>
+        <div data-goto="#planning" tabindex="0" role="button" aria-label="Перейти к разделу «Планирование»">
           <div class="step-no">1</div>
           <h4>Планирование</h4>
           <ul>
@@ -904,8 +927,9 @@
             <li>Годовой ПЗ и долгосрочный ПЗ</li>
             <li>Предварительный годовой план закупок</li>
           </ul>
+          <span class="hrail-go">Открыть раздел →</span>
         </div>
-        <div>
+        <div data-goto="#methods" tabindex="0" role="button" aria-label="Перейти к разделу «Способы закупок»">
           <div class="step-no">2</div>
           <h4>Выбор поставщика</h4>
           <ul>
@@ -913,8 +937,9 @@
             <li>Один источник · Электронный магазин</li>
             <li style="text-decoration:line-through; opacity:.6;">Товарные биржи (исключены с 26.05.2025)</li>
           </ul>
+          <span class="hrail-go">Открыть раздел →</span>
         </div>
-        <div>
+        <div data-goto="#contract" tabindex="0" role="button" aria-label="Перейти к разделу «Договор»">
           <div class="step-no">3</div>
           <h4>Заключение и исполнение договора</h4>
           <ul>
@@ -922,6 +947,7 @@
             <li>Изменение действующего договора</li>
             <li>Мониторинг исполнения</li>
           </ul>
+          <span class="hrail-go">Открыть раздел →</span>
         </div>
       </div>
     </section>
@@ -962,7 +988,7 @@
           <span class="tagnum">1 · ОКТРУ</span>
           <h4>Общий классификатор товаров, работ, услуг</h4>
           <p style="margin-bottom:14px;">Иерархический код из четырех уровней. Забивается в Системе при планировании позиции.</p>
-          <div class="mono" style="background:var(--navy-900); color:var(--brass-light); padding:12px 14px; font-size:14px; letter-spacing:.02em; border-radius:2px; overflow-x:auto;">1071<span style="color:#6b8299">-</span>0001<span style="color:#6b8299">-</span>0001<span style="color:#6b8299">-</span>100043045</div>
+          <div class="mono copy-code" data-copy="1071-0001-0001-100043045" tabindex="0" role="button" aria-label="Скопировать код ОКТРУ" style="background:var(--navy-900); color:var(--brass-light); padding:12px 14px; font-size:14px; letter-spacing:.02em; border-radius:2px; overflow-x:auto; cursor:pointer; position:relative;">1071<span style="color:#6b8299">-</span>0001<span style="color:#6b8299">-</span>0001<span style="color:#6b8299">-</span>100043045<span class="copy-hint">скопировать</span></div>
           <div style="display:grid; grid-template-columns:repeat(4,1fr); gap:6px; margin-top:10px; font-size:11px; color:var(--muted);">
             <div><strong class="n" style="display:block; font-size:11.5px;">Категория</strong>Компьютерная техника</div>
             <div><strong class="n" style="display:block; font-size:11.5px;">Группа</strong>Компьютеры / видеоигры</div>
@@ -1638,19 +1664,19 @@
       </div>
 
       <div class="change-radar">
-        <div class="radar-item">
+        <div class="radar-item" data-goto="#wave-259" tabindex="0" role="button" aria-label="Перейти к волне СД №259">
           <div class="rdate">01.01 / 31.01.2026</div>
           <div class="rnum">СД №259</div>
           <div class="rtitle">Реестр казахстанских товаропроизводителей, новый статус ОИ, приоритеты, ПКО, освобождения от обеспечений, 30% предоплата и ускоренная оплата.</div>
           <div class="rnote">Решение принято 26.08.2025. Для работы в 2026 особенно важны январские этапы вступления в силу.</div>
         </div>
-        <div class="radar-item">
+        <div class="radar-item" data-goto="#wave-269" tabindex="0" role="button" aria-label="Перейти к волне СД №269">
           <div class="rdate">10.03.2026</div>
           <div class="rnum">СД №269</div>
           <div class="rtitle">Маркетинговая цена по Корпоративному стандарту, исключение главы 6 / статьи 13 / Приложения №3, корректировки предварительного плана и статьи 65.</div>
           <div class="rnote">Пакет меняет не саму необходимость плановой цены, а источник и способ её нормативного обоснования.</div>
         </div>
-        <div class="radar-item">
+        <div class="radar-item" data-goto="#wave-274" tabindex="0" role="button" aria-label="Перейти к волне СД №274">
           <div class="rdate">25.05.2026</div>
           <div class="rnum">СД №274</div>
           <div class="rtitle">ОКТРУ, Национальный каталог товаров, код НКТ в актах, жёсткий 20-дневный срок по ненадёжным, исключение п.3-1 ст.66 и правило 10/60.</div>
@@ -1659,7 +1685,7 @@
       </div>
 
       <!-- WAVE 259 -->
-      <div class="wave">
+      <div class="wave" id="wave-259">
         <div class="wave-head">
           <div class="wave-badge"><b>№259</b><span>26.08.2025</span></div>
           <div>
@@ -1800,7 +1826,7 @@
       </div>
 
       <!-- WAVE 269 -->
-      <div class="wave">
+      <div class="wave" id="wave-269">
         <div class="wave-head">
           <div class="wave-badge"><b>№269</b><span>18.02.2026</span></div>
           <div>
@@ -1894,7 +1920,7 @@
       </div>
 
       <!-- WAVE 274 -->
-      <div class="wave">
+      <div class="wave" id="wave-274">
         <div class="wave-head">
           <div class="wave-badge"><b>№274</b><span>30.04.2026</span></div>
           <div>
@@ -2059,6 +2085,11 @@
   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
 </div>
 
+<div id="toast" role="status" aria-live="polite">
+  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l4 4L19 6"/></svg>
+  <span id="toastText">Скопировано</span>
+</div>
+
 <script>
 // ---------- icon set for nav links ----------
 const icons = {
@@ -2188,6 +2219,113 @@ document.getElementById('totop').addEventListener('click', ()=>window.scrollTo({
       else{ await document.exitFullscreen(); }
     }catch(e){}
   });
+})();
+
+// ---------- toast ----------
+function showToast(text){
+  const toast = document.getElementById('toast');
+  document.getElementById('toastText').textContent = text;
+  toast.classList.add('show');
+  clearTimeout(showToast._t);
+  showToast._t = setTimeout(()=>toast.classList.remove('show'), 1900);
+}
+
+// ---------- click-to-jump (hrail steps, radar items) ----------
+document.querySelectorAll('[data-goto]').forEach(el=>{
+  const go = ()=>{
+    const target = document.querySelector(el.dataset.goto);
+    if(target) target.scrollIntoView({behavior:'smooth', block:'start'});
+  };
+  el.addEventListener('click', go);
+  el.addEventListener('keydown', e=>{
+    if(e.key==='Enter' || e.key===' '){ e.preventDefault(); go(); }
+  });
+});
+
+// ---------- click-to-copy ----------
+document.querySelectorAll('[data-copy]').forEach(el=>{
+  const copy = async (e)=>{
+    e.stopPropagation();
+    const value = el.dataset.copy;
+    try{
+      await navigator.clipboard.writeText(value);
+    }catch(err){
+      const ta = document.createElement('textarea');
+      ta.value = value; ta.style.position='fixed'; ta.style.opacity='0';
+      document.body.appendChild(ta); ta.select();
+      try{ document.execCommand('copy'); }catch(_){}
+      document.body.removeChild(ta);
+    }
+    showToast('Код скопирован: ' + value);
+  };
+  el.addEventListener('click', copy);
+  el.addEventListener('keydown', e=>{
+    if(e.key==='Enter' || e.key===' '){ e.preventDefault(); copy(e); }
+  });
+});
+
+// ---------- count-up numbers on scroll into view ----------
+(function(){
+  function animateNumber(el, target, suffix, decimals){
+    const duration = 1100;
+    const start = performance.now();
+    function frame(now){
+      const p = Math.min(1, (now - start) / duration);
+      const eased = 1 - Math.pow(1 - p, 3);
+      const val = target * eased;
+      el.textContent = (decimals ? val.toFixed(decimals) : Math.round(val).toLocaleString('ru-RU')) + suffix;
+      if(p < 1) requestAnimationFrame(frame);
+      else el.textContent = (decimals ? target.toFixed(decimals) : target.toLocaleString('ru-RU')) + suffix;
+    }
+    requestAnimationFrame(frame);
+  }
+  const targets = document.querySelectorAll('.stat-seal .num, .memory-strip .big');
+  const countIO = new IntersectionObserver((entries)=>{
+    entries.forEach(entry=>{
+      if(!entry.isIntersecting) return;
+      const el = entry.target;
+      countIO.unobserve(el);
+      const raw = el.textContent.trim();
+      const m = raw.match(/^([\d\s]+)([.,](\d+))?(\D*)$/);
+      if(!m || /\//.test(raw)){ return; } // skip compound values like "10 / 60"
+      const numStr = m[1].replace(/\s/g,'');
+      const decimalsStr = m[3];
+      const suffix = m[4] || '';
+      const target = parseFloat(numStr + (decimalsStr ? '.' + decimalsStr : ''));
+      if(isNaN(target)) return;
+      animateNumber(el, target, suffix, decimalsStr ? decimalsStr.length : 0);
+    });
+  }, {threshold:.5});
+  targets.forEach(el=>countIO.observe(el));
+})();
+
+// ---------- subtle tilt-on-hover for cards ----------
+(function(){
+  if(window.matchMedia('(pointer: coarse)').matches) return; // skip touch devices
+  const items = document.querySelectorAll('.card, .radar-item');
+  items.forEach(el=>{
+    el.addEventListener('mousemove', (e)=>{
+      const r = el.getBoundingClientRect();
+      const x = (e.clientX - r.left) / r.width - .5;
+      const y = (e.clientY - r.top) / r.height - .5;
+      el.style.transform = `translateY(-3px) perspective(700px) rotateX(${(-y*4).toFixed(2)}deg) rotateY(${(x*4).toFixed(2)}deg)`;
+    });
+    el.addEventListener('mouseleave', ()=>{ el.style.transform = ''; });
+  });
+})();
+
+// ---------- hero rays gentle parallax ----------
+(function(){
+  const rays = document.querySelector('.hero .rays');
+  const heroSec = document.querySelector('.hero');
+  if(!rays || !heroSec || window.matchMedia('(pointer: coarse)').matches) return;
+  heroSec.addEventListener('mousemove', (e)=>{
+    const r = heroSec.getBoundingClientRect();
+    const x = (e.clientX - r.left) / r.width - .5;
+    const y = (e.clientY - r.top) / r.height - .5;
+    rays.style.transform = `translate(calc(-50% + ${(x*18).toFixed(1)}px), calc(-50% + ${(y*18).toFixed(1)}px))`;
+  });
+  heroSec.addEventListener('mouseleave', ()=>{ rays.style.transform = 'translate(-50%,-50%)'; });
 })();
 
 </script>

@@ -652,10 +652,13 @@
   footer .contact-card{border-radius:18px;background:#0b2534;padding:30px 34px;border-color:rgba(240,200,120,.2);}
   footer .contact-card a{border-radius:12px;}
 
-  #presToggle,#fullToggle{right:22px;border-radius:999px;padding:11px 16px;background:rgba(7,24,36,.94);backdrop-filter:blur(12px);box-shadow:0 14px 38px -20px rgba(0,0,0,.6);}
+  #presToggle,#fullToggle,#introToggle{right:22px;border-radius:999px;padding:11px 16px;background:rgba(7,24,36,.94);backdrop-filter:blur(12px);box-shadow:0 14px 38px -20px rgba(0,0,0,.6);}
   #presToggle{bottom:80px;}
-  #fullToggle{position:fixed;bottom:132px;z-index:1300;display:flex;align-items:center;gap:8px;color:var(--brass-light);border:1px solid rgba(201,148,66,.55);cursor:pointer;font-family:SFMono-Regular,Consolas,'Liberation Mono',Menlo,monospace;font-size:12px;font-weight:600;letter-spacing:.03em;}
-  #fullToggle:hover{background:#163b50;}
+  #fullToggle,#introToggle{position:fixed;z-index:1300;display:flex;align-items:center;gap:8px;color:var(--brass-light);border:1px solid rgba(201,148,66,.55);cursor:pointer;font-family:SFMono-Regular,Consolas,'Liberation Mono',Menlo,monospace;font-size:12px;font-weight:600;letter-spacing:.03em;transition:background .2s ease,color .2s ease,border-color .2s ease;}
+  #fullToggle{bottom:132px;}
+  #fullToggle:hover,#introToggle:hover{background:#163b50;}
+  #introToggle{bottom:184px;}
+  #introToggle.active{background:var(--brass);color:var(--navy-950);border-color:var(--brass);}
   #totop{border-radius:14px;background:rgba(7,24,36,.94);}
   #progress{height:4px;box-shadow:0 0 18px rgba(240,200,120,.35);}
 
@@ -676,6 +679,7 @@
     .verification-strip{border-radius:14px;align-items:flex-start;line-height:1.45;}
     .program .meta span{border-radius:12px;}
     #fullToggle{display:none;}
+    #introToggle{bottom:132px;}
   }
 
 
@@ -886,40 +890,60 @@
   <button type="button" class="intro-skip" id="introSkip">Пропустить →</button>
 </div>
 <script>
-// Absolute failsafe, independent of everything below: whatever happens,
-// the intro overlay can never block the site for more than a few seconds.
-setTimeout(function(){
-  var el = document.getElementById('introOverlay');
-  if(el && el.parentNode){ el.parentNode.removeChild(el); }
-  document.documentElement.style.overflow = '';
-}, 4500);
+// SKIntro: reusable, replayable intro portal. Exposed on window so the
+// "Заставка" button (wired up later, once it exists in the DOM) can
+// start or stop it on demand — not just play it once on first load.
+window.SKIntro = (function(){
+  var original = document.getElementById('introOverlay');
+  if(!original){ return { show:function(){}, hide:function(){}, isPlaying:function(){ return false; } }; }
+  var template = original.cloneNode(true);
+  if(original.parentNode) original.parentNode.removeChild(original);
 
-try{
-  (function(){
-    var overlay = document.getElementById('introOverlay');
-    if(!overlay) return;
+  var current = null;
+  var onStateChange = null; // set by the page to update the toggle button UI
 
-    var reduceMotion = false;
-    try{ reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches; }catch(e){}
-    var alreadyShown = false;
-    try{ alreadyShown = sessionStorage.getItem('skIntroShown') === '1'; }catch(e){}
+  function lock(){ document.documentElement.style.overflow = 'hidden'; }
+  function unlock(){ document.documentElement.style.overflow = ''; }
 
-    function remove(){
-      if(overlay && overlay.parentNode) overlay.parentNode.removeChild(overlay);
-      document.documentElement.style.overflow = '';
+  function notify(playing){ if(onStateChange){ try{ onStateChange(playing); }catch(e){} } }
+
+  function hide(){
+    if(!current) return;
+    var el = current;
+    current = null;
+    clearTimeout(el._timer);
+    clearTimeout(el._failsafe);
+    if(el._esc) document.removeEventListener('keydown', el._esc);
+    el.classList.add('leaving');
+    unlock();
+    notify(false);
+    setTimeout(function(){ if(el.parentNode) el.parentNode.removeChild(el); }, 800);
+  }
+
+  function show(opts){
+    opts = opts || {};
+    if(current){ hide(); }
+
+    if(opts.auto){
+      var reduceMotion = false;
+      try{ reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches; }catch(e){}
+      var alreadyShown = false;
+      try{ alreadyShown = sessionStorage.getItem('skIntroShown') === '1'; }catch(e){}
+      if(reduceMotion || alreadyShown) return;
     }
 
-    if(alreadyShown || reduceMotion){
-      remove();
-      return;
-    }
+    var overlay = template.cloneNode(true);
+    overlay.classList.remove('leaving');
+    document.body.insertBefore(overlay, document.body.firstChild);
+    current = overlay;
+    notify(true);
+    lock();
 
-    document.documentElement.style.overflow = 'hidden';
     var DURATION = 2500;
-    var bar = document.getElementById('introBarFill');
+    var bar = overlay.querySelector('.intro-bar-fill');
     if(bar){
+      bar.style.width = '0%';
       bar.style.transition = 'width ' + DURATION + 'ms linear';
-      // rAF twice so the browser commits the 0% state before animating to 100%
       requestAnimationFrame(function(){ requestAnimationFrame(function(){ bar.style.width = '100%'; }); });
     }
 
@@ -927,28 +951,34 @@ try{
     function finish(){
       if(finished) return;
       finished = true;
-      clearTimeout(timer);
       try{ sessionStorage.setItem('skIntroShown', '1'); }catch(e){}
-      overlay.classList.add('leaving');
-      document.documentElement.style.overflow = '';
-      setTimeout(remove, 800);
+      hide();
     }
-    var timer = setTimeout(finish, DURATION + 250);
+    overlay._timer = setTimeout(finish, DURATION + 250);
+    // Per-instance failsafe: this overlay can never outlive 4.5s no matter what.
+    overlay._failsafe = setTimeout(function(){
+      if(overlay.parentNode) overlay.parentNode.removeChild(overlay);
+      unlock();
+      if(current === overlay){ current = null; notify(false); }
+    }, 4500);
 
     overlay.addEventListener('click', finish);
-    var skipBtn = document.getElementById('introSkip');
-    if(skipBtn){
-      skipBtn.addEventListener('click', function(e){ e.stopPropagation(); finish(); });
-    }
-    document.addEventListener('keydown', function escHandler(e){
-      if(e.key === 'Escape'){ finish(); document.removeEventListener('keydown', escHandler); }
-    });
-  })();
-}catch(e){
-  var el = document.getElementById('introOverlay');
-  if(el && el.parentNode) el.parentNode.removeChild(el);
-  document.documentElement.style.overflow = '';
-}
+    var skipBtn = overlay.querySelector('.intro-skip');
+    if(skipBtn) skipBtn.addEventListener('click', function(e){ e.stopPropagation(); finish(); });
+
+    overlay._esc = function(e){ if(e.key === 'Escape') finish(); };
+    document.addEventListener('keydown', overlay._esc);
+  }
+
+  try{ show({ auto:true }); }catch(e){ unlock(); }
+
+  return {
+    show: function(){ show({ auto:false }); },
+    hide: hide,
+    isPlaying: function(){ return !!current; },
+    onStateChange: function(fn){ onStateChange = fn; }
+  };
+})();
 </script>
 <noscript><style>#introOverlay{display:none !important;}html{overflow:visible !important;}</style></noscript>
 
@@ -2077,6 +2107,11 @@ try{
   </main>
 </div>
 
+<div id="introToggle" role="button" aria-pressed="false" aria-label="Показать вступительную заставку" title="Показать вступительную заставку">
+  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l1.9 4.6L18 9l-4.1 1.4L12 15l-1.9-4.6L6 9l4.1-1.4z"/><path d="M19 15l.9 2.1L22 18l-2.1.9L19 21l-.9-2.1L16 18l2.1-.9z"/></svg>
+  <span id="introToggleLabel">Заставка</span>
+</div>
+
 <div id="fullToggle" role="button" aria-label="Полный экран" title="Развернуть материал на весь экран">
   <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3H3v5M16 3h5v5M8 21H3v-5M16 21h5v-5"/></svg>
   <span>Полный экран</span>
@@ -2203,6 +2238,25 @@ navlinks.forEach(l=>l.addEventListener('click', closeMenu));
 
 // ---------- back to top ----------
 document.getElementById('totop').addEventListener('click', ()=>window.scrollTo({top:0, behavior:'smooth'}));
+
+// ---------- intro portal toggle ----------
+(function(){
+  const btn = document.getElementById('introToggle');
+  const label = document.getElementById('introToggleLabel');
+  if(!btn || !window.SKIntro) return;
+  function setUI(playing){
+    btn.classList.toggle('active', playing);
+    btn.setAttribute('aria-pressed', playing ? 'true' : 'false');
+    if(label) label.textContent = playing ? 'Остановить' : 'Заставка';
+    btn.title = playing ? 'Остановить вступительную заставку' : 'Показать вступительную заставку';
+  }
+  window.SKIntro.onStateChange(setUI);
+  setUI(window.SKIntro.isPlaying());
+  btn.addEventListener('click', () => {
+    if(window.SKIntro.isPlaying()) window.SKIntro.hide();
+    else window.SKIntro.show();
+  });
+})();
 
 // ---------- presentation mode ----------
 (function(){

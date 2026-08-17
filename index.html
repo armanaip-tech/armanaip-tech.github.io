@@ -886,56 +886,69 @@
   <button type="button" class="intro-skip" id="introSkip">Пропустить →</button>
 </div>
 <script>
-(function(){
-  var overlay = document.getElementById('introOverlay');
-  if(!overlay) return;
-  var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  var alreadyShown = false;
-  try{ alreadyShown = sessionStorage.getItem('skIntroShown') === '1'; }catch(e){}
+// Absolute failsafe, independent of everything below: whatever happens,
+// the intro overlay can never block the site for more than a few seconds.
+setTimeout(function(){
+  var el = document.getElementById('introOverlay');
+  if(el && el.parentNode){ el.parentNode.removeChild(el); }
+  document.documentElement.style.overflow = '';
+}, 4500);
 
-  if(alreadyShown || reduceMotion){
-    overlay.hidden = true;
-    if(overlay.parentNode) overlay.parentNode.removeChild(overlay);
-    return;
-  }
+try{
+  (function(){
+    var overlay = document.getElementById('introOverlay');
+    if(!overlay) return;
 
-  document.documentElement.style.overflow = 'hidden';
-  var DURATION = 2500;
-  var bar = document.getElementById('introBarFill');
-  var start = null;
-  var raf;
-  function tick(now){
-    if(start === null) start = now;
-    var p = Math.min(1, (now - start) / DURATION);
-    bar.style.width = (p * 100) + '%';
-    if(p < 1) raf = requestAnimationFrame(tick);
-  }
-  raf = requestAnimationFrame(tick);
+    var reduceMotion = false;
+    try{ reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches; }catch(e){}
+    var alreadyShown = false;
+    try{ alreadyShown = sessionStorage.getItem('skIntroShown') === '1'; }catch(e){}
 
-  var finished = false;
-  function finish(){
-    if(finished) return;
-    finished = true;
-    cancelAnimationFrame(raf);
-    clearTimeout(timer);
-    try{ sessionStorage.setItem('skIntroShown', '1'); }catch(e){}
-    overlay.classList.add('leaving');
-    document.documentElement.style.overflow = '';
-    setTimeout(function(){
-      if(overlay.parentNode) overlay.parentNode.removeChild(overlay);
-    }, 800);
-  }
-  var timer = setTimeout(finish, DURATION + 250);
+    function remove(){
+      if(overlay && overlay.parentNode) overlay.parentNode.removeChild(overlay);
+      document.documentElement.style.overflow = '';
+    }
 
-  overlay.addEventListener('click', finish);
-  document.getElementById('introSkip').addEventListener('click', function(e){
-    e.stopPropagation();
-    finish();
-  });
-  document.addEventListener('keydown', function escHandler(e){
-    if(e.key === 'Escape'){ finish(); document.removeEventListener('keydown', escHandler); }
-  });
-})();
+    if(alreadyShown || reduceMotion){
+      remove();
+      return;
+    }
+
+    document.documentElement.style.overflow = 'hidden';
+    var DURATION = 2500;
+    var bar = document.getElementById('introBarFill');
+    if(bar){
+      bar.style.transition = 'width ' + DURATION + 'ms linear';
+      // rAF twice so the browser commits the 0% state before animating to 100%
+      requestAnimationFrame(function(){ requestAnimationFrame(function(){ bar.style.width = '100%'; }); });
+    }
+
+    var finished = false;
+    function finish(){
+      if(finished) return;
+      finished = true;
+      clearTimeout(timer);
+      try{ sessionStorage.setItem('skIntroShown', '1'); }catch(e){}
+      overlay.classList.add('leaving');
+      document.documentElement.style.overflow = '';
+      setTimeout(remove, 800);
+    }
+    var timer = setTimeout(finish, DURATION + 250);
+
+    overlay.addEventListener('click', finish);
+    var skipBtn = document.getElementById('introSkip');
+    if(skipBtn){
+      skipBtn.addEventListener('click', function(e){ e.stopPropagation(); finish(); });
+    }
+    document.addEventListener('keydown', function escHandler(e){
+      if(e.key === 'Escape'){ finish(); document.removeEventListener('keydown', escHandler); }
+    });
+  })();
+}catch(e){
+  var el = document.getElementById('introOverlay');
+  if(el && el.parentNode) el.parentNode.removeChild(el);
+  document.documentElement.style.overflow = '';
+}
 </script>
 <noscript><style>#introOverlay{display:none !important;}html{overflow:visible !important;}</style></noscript>
 

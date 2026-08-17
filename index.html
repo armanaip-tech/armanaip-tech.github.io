@@ -39,7 +39,6 @@
   <nav class="sidebar" id="sidebar" aria-label="Навигация по разделам">
     <div class="sidebar-group">
       <a href="#hero">Главная</a>
-      <a href="#order-overview">О Порядке</a>
     </div>
     <div class="sidebar-group">
       <div class="sidebar-group-title">Учебные разделы</div>
@@ -50,6 +49,7 @@
       <a href="#final-provisions">Заключительные положения</a>
     </div>
     <div class="sidebar-group">
+      <a href="#order-overview">О Порядке</a>
       <a href="#changes">Изменения Порядка</a>
       <a href="#quiz">Проверка знаний</a>
       <a href="#lecturer">О лекторе</a>
@@ -75,18 +75,15 @@
       <h1 class="reveal">Закупки АО «Самрук-Қазына»: <span class="hero-accent">порядок, процессы и практика</span></h1>
       <p class="hero-sub reveal">Интерактивный учебный портал по работе с <a href="https://zakup.sk.kz" target="_blank" rel="noopener">zakup.sk.kz</a> — планирование, реестры, выбор поставщика, договоры и актуальные изменения Порядка закупок АО «Самрук-Қазына».</p>
 
-      <p class="reveal" style="max-width:720px;font-size:.95rem">Портал закупок zakup.sk.kz функционирует на основании Порядка осуществления закупок акционерным обществом «Фонд национального благосостояния «Самрук-Қазына» и юридическими лицами, пятьдесят и более процентов голосующих акций (долей участия) которых прямо или косвенно принадлежат АО «Самрук-Қазына» на праве собственности или доверительного управления. Учебные материалы подготовлены в соответствии с актуальной редакцией Порядка с учётом утверждённых изменений и дополнений.</p>
-
       <div class="hero-warning reveal">
         <svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-        <p>Портал имеет учебно-информационный характер и не заменяет официальный веб-портал закупок или официальную редакцию нормативного документа. При проведении закупок необходимо руководствоваться действующей редакцией Порядка и документами, размещёнными в официальных источниках.</p>
+        <p>Учебно-информационный ресурс — не заменяет официальный веб-портал закупок и действующую редакцию Порядка.</p>
       </div>
 
       <div class="hero-cta-row reveal">
-        <a href="#order-overview" class="btn-cta">Изучить Порядок
+        <a href="#planning" class="btn-cta">Начать с планирования
           <svg class="icon" style="width:16px;height:16px;stroke:#04121c" viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
         </a>
-        <a href="#planning" class="btn-ghost">Начать обучение</a>
         <a href="#changes" class="btn-ghost">Последние изменения</a>
         <a href="#quiz" class="btn-ghost">Пройти тест</a>
       </div>
@@ -98,38 +95,25 @@
       <div class="section-head reveal">
         <div class="eyebrow">Жизненный цикл</div>
         <h2>Карта закупочного процесса</h2>
-        <p>Кликните на этап, чтобы увидеть краткое пояснение и перейти в соответствующий учебный раздел.</p>
       </div>
       <div class="process-map reveal" id="process-map"></div>
       <div class="map-detail" id="map-detail">Выберите этап выше, чтобы узнать подробности.</div>
     </section>
 
-    <section class="section section--alt" id="navigator">
-      <div class="section-head reveal">
-        <div class="eyebrow">Навигация</div>
-        <h2>Что вы хотите изучить?</h2>
-      </div>
-      <div class="grid grid-3" id="navigator-grid"></div>
-    </section>
+    <!-- ===================== 5 УЧЕБНЫХ РАЗДЕЛОВ (рендерятся из modules.json, начиная с планирования) ===================== -->
+    <div id="modules-root"></div>
 
-    <!-- ===================== О ПОРЯДКЕ ===================== -->
-    <section class="section" id="order-overview">
+    <!-- ===================== О ПОРЯДКЕ (кратко) ===================== -->
+    <section class="section section--alt" id="order-overview">
       <div class="section-head reveal">
         <div class="eyebrow">О документе</div>
         <h2>О Порядке осуществления закупок</h2>
-        <p>Ключевые сведения о нормативном документе, на основании которого работает портал закупок zakup.sk.kz.</p>
       </div>
       <div class="grid grid-3 reveal" id="order-cards"></div>
-
-      <div class="reveal" style="margin-top:56px">
-        <h3>Хронология редакций</h3>
-        <p>Порядок утверждён решением Совета директоров АО «Самрук-Қазына» и с момента утверждения регулярно обновляется. Ниже — история изменений вплоть до последнего решения.</p>
-        <div class="timeline-track" id="timeline" style="margin-top:24px"></div>
+      <div class="reveal" id="timeline-wrap" style="margin-top:32px">
+        <div class="timeline-track" id="timeline"></div>
       </div>
     </section>
-
-    <!-- ===================== 5 УЧЕБНЫХ РАЗДЕЛОВ (рендерятся из modules.json) ===================== -->
-    <div id="modules-root"></div>
 
     <!-- ===================== ИЗМЕНЕНИЯ ПОРЯДКА ===================== -->
     <section class="section section--alt" id="changes">

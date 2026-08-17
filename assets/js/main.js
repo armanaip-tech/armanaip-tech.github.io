@@ -97,38 +97,15 @@ function renderProcessMap() {
   });
 }
 
-const NAVIGATOR_CARDS = [
-  { icon: 'book', title: 'О Порядке', desc: 'Нормативная основа, редакции и хронология изменений', href: '#order-overview' },
-  { icon: 'calendar', title: 'Планирование закупок', desc: 'Как формируется и утверждается План закупок', href: '#planning' },
-  { icon: 'database', title: 'Реестры и перечни', desc: 'Предварительная квалификация и Перечень ненадёжных поставщиков', href: '#registries' },
-  { icon: 'route', title: 'Выбор поставщика', desc: 'Тендер, ЗЦП, электронный магазин, один источник', href: '#supplier-selection' },
-  { icon: 'file-signature', title: 'Управление договорами', desc: 'Исполнение, изменение и закрытие договора', href: '#contract-management' },
-  { icon: 'flag', title: 'Изменения Порядка', desc: 'Утверждённые изменения и проектные предложения', href: '#changes' },
-  { icon: 'help-circle', title: 'Проверка знаний', desc: '10 вопросов по структуре Порядка', href: '#quiz' },
-  { icon: 'user', title: 'О лекторе', desc: 'Айып А., ТОО «Самрук-Қазына Контракт»', href: '#lecturer' },
-];
-
-function renderNavigator() {
-  document.getElementById('navigator-grid').innerHTML = NAVIGATOR_CARDS.map(c => `
-    <a class="nav-card" href="${c.href}">
-      <div class="ic">${svgIcon(c.icon)}</div>
-      <h4>${esc(c.title)}</h4>
-      <p>${esc(c.desc)}</p>
-    </a>
-  `).join('');
-}
-
 // ============================================================================
-// РЕНДЕР: О ПОРЯДКЕ
+// РЕНДЕР: О ПОРЯДКЕ (кратко)
 // ============================================================================
 function renderOrderOverview() {
   const cards = [
-    { label: 'Полное название', value: 'Порядок осуществления закупок акционерным обществом «Фонд национального благосостояния «Самрук-Қазына» и юридическими лицами, пятьдесят и более процентов голосующих акций (долей участия) которых прямо или косвенно принадлежат АО «Самрук-Қазына» на праве собственности или доверительного управления' },
-    { label: 'Первоначальное утверждение', value: 'Протокол №193 от 3 марта 2022 года' },
-    { label: 'Используемая редакция', value: 'Консолидированная редакция с изменениями по состоянию на 30 апреля 2026 года' },
-    { label: 'Последнее учитываемое решение', value: 'Решение Совета директоров №274 от 30 апреля 2026 года' },
-    { label: 'Дата введения изменений по решению №274', value: '25 мая 2026 года' },
-    { label: 'Официальный портал закупок', value: 'zakup.sk.kz' },
+    { label: 'Утверждён', value: 'Протокол №193 от 3 марта 2022 года' },
+    { label: 'Текущая редакция', value: 'С изменениями по состоянию на 30 апреля 2026 года' },
+    { label: 'Последнее решение', value: '№274 от 30.04.2026 · действует с 25.05.2026' },
+    { label: 'Официальный портал', value: 'zakup.sk.kz' },
   ];
   document.getElementById('order-cards').innerHTML = cards.map(c => `
     <div class="data-card"><div class="label">${esc(c.label)}</div><div class="value">${esc(c.value)}</div></div>
@@ -136,13 +113,27 @@ function renderOrderOverview() {
 }
 
 function renderTimeline() {
-  document.getElementById('timeline').innerHTML = state.timeline.map(t => `
+  const wrap = document.getElementById('timeline-wrap');
+  const milestones = state.timeline.filter(t => t.milestone);
+  const rest = state.timeline.filter(t => !t.milestone);
+  const itemHtml = (t) => `
     <div class="timeline-item ${t.milestone ? 'milestone' : ''}">
       <div class="timeline-date">${formatDate(t.date)}</div>
       <div class="timeline-label">${esc(t.label)} <span class="timeline-protocol">— протокол №${esc(t.protocol)}</span></div>
       ${t.desc ? `<div class="timeline-desc">${esc(t.desc)}</div>` : ''}
-    </div>
-  `).join('');
+    </div>`;
+  let expanded = false;
+  function render() {
+    const list = expanded ? state.timeline : milestones;
+    document.getElementById('timeline').innerHTML = list.map(itemHtml).join('');
+    const btnWrap = document.getElementById('timeline-toggle-wrap');
+    if (rest.length) {
+      btnWrap.innerHTML = `<button class="btn-ghost" id="timeline-toggle" style="margin-top:8px">${expanded ? 'Скрыть промежуточные редакции' : `Показать все ${state.timeline.length} редакций`}</button>`;
+      document.getElementById('timeline-toggle').addEventListener('click', () => { expanded = !expanded; render(); });
+    }
+  }
+  wrap.innerHTML = `<div class="timeline-track" id="timeline"></div><div id="timeline-toggle-wrap"></div>`;
+  render();
 }
 
 function formatDate(iso) {
@@ -188,8 +179,11 @@ function renderModuleArticleReader(moduleId) {
     </div>
   `).join('');
   return `
-    <div class="article-reader">
-      <div class="official-badge" style="margin-top:0">Официальный текст Порядка · раздел статей ${arts[0].number}–${arts[arts.length - 1].number}</div>
+    <button class="reader-toggle" data-reader-toggle aria-expanded="false">
+      <span>Официальный текст Порядка · статьи ${arts[0].number}–${arts[arts.length - 1].number} (${arts.length})</span>
+      <svg class="icon article-chevron" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+    </button>
+    <div class="article-reader" hidden>
       ${items}
     </div>
   `;
@@ -224,15 +218,12 @@ function renderModules() {
           <div class="step-pill">
             <div class="n">${String(pi + 1).padStart(2, '0')}${p.ref ? ` · ст.${p.ref}` : ''}</div>
             <div class="t">${esc(p.title)}</div>
+            <div class="d">${esc(p.desc)}</div>
           </div>
         `).join('')}
       </div>
-      <div class="reveal" style="margin-top:18px">
-        ${mod.process.map(p => `<p style="font-size:.9rem"><strong style="color:#fff">${esc(p.title)}.</strong> ${esc(p.desc)}</p>`).join('')}
-      </div>
 
-      <div class="reveal">
-        <h3>Официальный текст Порядка</h3>
+      <div class="reveal" style="margin-top:28px">
         ${renderModuleArticleReader(mod.id)}
       </div>
 
@@ -286,6 +277,16 @@ function renderModules() {
       </label>
     </section>
   `).join('');
+
+  // official-text reader toggle (collapsed by default)
+  root.querySelectorAll('[data-reader-toggle]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const reader = btn.nextElementSibling;
+      const open = !reader.hidden;
+      reader.hidden = open;
+      btn.setAttribute('aria-expanded', String(!open));
+    });
+  });
 
   // article accordion toggling
   root.querySelectorAll('.article-summary').forEach(sum => {
@@ -763,10 +764,9 @@ async function init() {
 
   renderHeroKpis();
   renderProcessMap();
-  renderNavigator();
+  renderModules();
   renderOrderOverview();
   renderTimeline();
-  renderModules();
   renderChangesFilters();
   renderChangesList();
   mountMainQuiz();

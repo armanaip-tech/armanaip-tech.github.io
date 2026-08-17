@@ -790,9 +790,154 @@
     font-size:12.6px;line-height:1.52;color:#665229;
   }
 
+
+  /* ============ INTRO PORTAL ============ */
+  #introOverlay{
+    position:fixed;inset:0;z-index:5000;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;
+    background:
+      radial-gradient(1100px 700px at 50% 42%,#123549,#06141e 70%);
+    overflow:hidden;padding:24px;text-align:center;
+    transition:opacity .7s cubic-bezier(.4,0,.2,1),transform .8s cubic-bezier(.4,0,.2,1);
+  }
+  #introOverlay[hidden]{display:none;}
+  #introOverlay.leaving{opacity:0;transform:scale(1.08);pointer-events:none;}
+  #introOverlay::after{
+    content:"";position:absolute;inset:0;pointer-events:none;opacity:.12;
+    background-image:linear-gradient(rgba(255,255,255,.06) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.06) 1px,transparent 1px);
+    background-size:46px 46px;mask-image:radial-gradient(600px 500px at 50% 45%,#000,transparent 75%);
+  }
+  .intro-rings{position:absolute;top:50%;left:50%;width:0;height:0;}
+  .intro-rings span{
+    position:absolute;top:0;left:0;width:130px;height:130px;margin:-65px 0 0 -65px;
+    border:1px solid rgba(240,200,120,.4);border-radius:50%;
+    animation:introRing 2.8s cubic-bezier(.2,.6,.4,1) infinite;
+  }
+  .intro-rings span:nth-child(2){animation-delay:.75s;}
+  .intro-rings span:nth-child(3){animation-delay:1.5s;}
+  @keyframes introRing{0%{transform:scale(.35);opacity:.85;}100%{transform:scale(3.6);opacity:0;}}
+  .intro-mark{
+    position:relative;z-index:2;width:62px;height:62px;border-radius:16px;
+    background:linear-gradient(145deg,rgba(240,200,120,.2),rgba(255,255,255,.04));
+    border:1.4px solid var(--brass,#c99442);display:flex;align-items:center;justify-content:center;
+    font-family:'Avenir Next','Segoe UI',Arial,sans-serif;font-weight:700;color:#f0c878;font-size:21px;
+    opacity:0;animation:introMark .8s ease .1s both;box-shadow:0 18px 40px rgba(0,0,0,.4);
+  }
+  @keyframes introMark{from{opacity:0;transform:scale(.6) rotate(-8deg);}to{opacity:1;transform:scale(1) rotate(0);}}
+  .intro-title{
+    position:relative;z-index:2;color:#fdfaf2;font-family:'Avenir Next','Segoe UI',Arial,sans-serif;
+    font-size:clamp(21px,3.4vw,31px);font-weight:600;letter-spacing:-.01em;opacity:0;animation:introUp .7s ease .35s both;
+  }
+  .intro-sub{
+    position:relative;z-index:2;color:#93a8b8;font-family:SFMono-Regular,Consolas,'Liberation Mono',Menlo,monospace;
+    font-size:11.5px;letter-spacing:.14em;text-transform:uppercase;opacity:0;animation:introUp .7s ease .5s both;
+  }
+  @keyframes introUp{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
+  .intro-agenda{position:relative;z-index:2;display:flex;flex-wrap:wrap;justify-content:center;gap:7px;max-width:600px;margin-top:8px;}
+  .intro-item{
+    font-family:SFMono-Regular,Consolas,'Liberation Mono',Menlo,monospace;font-size:10.6px;letter-spacing:.02em;
+    color:#8ea0af;background:rgba(255,255,255,.045);border:1px solid rgba(240,200,120,.14);
+    padding:6px 12px;border-radius:999px;opacity:0;transform:translateY(6px);animation:introItem .55s ease forwards;
+  }
+  .intro-item:nth-child(1){animation-delay:.62s;}
+  .intro-item:nth-child(2){animation-delay:.75s;}
+  .intro-item:nth-child(3){animation-delay:.88s;}
+  .intro-item:nth-child(4){animation-delay:1.01s;}
+  .intro-item:nth-child(5){animation-delay:1.14s;}
+  .intro-item:nth-child(6){animation-delay:1.27s;}
+  .intro-item:nth-child(7){animation-delay:1.4s;}
+  .intro-item:nth-child(8){animation-delay:1.53s;}
+  @keyframes introItem{
+    0%{opacity:0;transform:translateY(6px);}
+    35%{opacity:1;transform:translateY(0);color:#ffe2a6;border-color:rgba(240,200,120,.65);background:rgba(240,200,120,.12);}
+    100%{opacity:1;transform:translateY(0);color:#8ea0af;border-color:rgba(240,200,120,.14);background:rgba(255,255,255,.045);}
+  }
+  .intro-bar{position:relative;z-index:2;width:210px;height:3px;background:rgba(255,255,255,.09);border-radius:2px;overflow:hidden;margin-top:14px;opacity:0;animation:introUp .5s ease .6s both;}
+  .intro-bar-fill{height:100%;width:0%;background:linear-gradient(90deg,#c99442,#f0c878);}
+  .intro-skip{
+    position:absolute;bottom:26px;right:26px;z-index:3;background:none;border:1px solid rgba(240,200,120,.4);
+    color:#cbd9e1;font-family:SFMono-Regular,Consolas,'Liberation Mono',Menlo,monospace;font-size:11px;
+    padding:9px 15px;border-radius:999px;cursor:pointer;opacity:0;animation:introUp .5s ease 1.1s both;transition:background .2s ease;
+  }
+  .intro-skip:hover{background:rgba(240,200,120,.14);}
+  @media (max-width:600px){ .intro-agenda{ max-width:320px; } .intro-item{ font-size:10px; padding:5px 10px; } }
+  @media (prefers-reduced-motion: reduce){
+    #introOverlay,.intro-mark,.intro-title,.intro-sub,.intro-item,.intro-bar,.intro-skip,.intro-rings span{animation:none !important;opacity:1 !important;transform:none !important;}
+  }
 </style>
 </head>
 <body>
+
+<div id="introOverlay" role="dialog" aria-label="Загрузка портала">
+  <div class="intro-rings"><span></span><span></span><span></span></div>
+  <div class="intro-mark">SK</div>
+  <div class="intro-title">Порядок осуществления закупок</div>
+  <div class="intro-sub">Обучающий семинар · ТОО «Самрук-Казына Контракт» · ИСЭЗ</div>
+  <div class="intro-agenda">
+    <span class="intro-item">01 · Как устроена закупка</span>
+    <span class="intro-item">02 · Планирование</span>
+    <span class="intro-item">03 · Способы закупок</span>
+    <span class="intro-item">04 · Реестры и приоритеты</span>
+    <span class="intro-item">05 · Тендер</span>
+    <span class="intro-item">06 · Оценка заявок</span>
+    <span class="intro-item">07 · Договор и поставщики</span>
+    <span class="intro-item">08 · Изменения 2026</span>
+  </div>
+  <div class="intro-bar"><div class="intro-bar-fill" id="introBarFill"></div></div>
+  <button type="button" class="intro-skip" id="introSkip">Пропустить →</button>
+</div>
+<script>
+(function(){
+  var overlay = document.getElementById('introOverlay');
+  if(!overlay) return;
+  var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var alreadyShown = false;
+  try{ alreadyShown = sessionStorage.getItem('skIntroShown') === '1'; }catch(e){}
+
+  if(alreadyShown || reduceMotion){
+    overlay.hidden = true;
+    if(overlay.parentNode) overlay.parentNode.removeChild(overlay);
+    return;
+  }
+
+  document.documentElement.style.overflow = 'hidden';
+  var DURATION = 2500;
+  var bar = document.getElementById('introBarFill');
+  var start = null;
+  var raf;
+  function tick(now){
+    if(start === null) start = now;
+    var p = Math.min(1, (now - start) / DURATION);
+    bar.style.width = (p * 100) + '%';
+    if(p < 1) raf = requestAnimationFrame(tick);
+  }
+  raf = requestAnimationFrame(tick);
+
+  var finished = false;
+  function finish(){
+    if(finished) return;
+    finished = true;
+    cancelAnimationFrame(raf);
+    clearTimeout(timer);
+    try{ sessionStorage.setItem('skIntroShown', '1'); }catch(e){}
+    overlay.classList.add('leaving');
+    document.documentElement.style.overflow = '';
+    setTimeout(function(){
+      if(overlay.parentNode) overlay.parentNode.removeChild(overlay);
+    }, 800);
+  }
+  var timer = setTimeout(finish, DURATION + 250);
+
+  overlay.addEventListener('click', finish);
+  document.getElementById('introSkip').addEventListener('click', function(e){
+    e.stopPropagation();
+    finish();
+  });
+  document.addEventListener('keydown', function escHandler(e){
+    if(e.key === 'Escape'){ finish(); document.removeEventListener('keydown', escHandler); }
+  });
+})();
+</script>
+<noscript><style>#introOverlay{display:none !important;}html{overflow:visible !important;}</style></noscript>
 
 <div id="progress"></div>
 

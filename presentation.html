@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Порядок осуществления закупок — презентация к семинару</title>
+<style>
+  :root{
+    --navy-950:#16303f;
+    --navy-900:#1d3d4f;
+    --navy-800:#26536a;
+    --navy-700:#356480;
+    --navy-600:#4a7f9c;
+    --brass:#bf8a3c;
+    --brass-light:#e2bd78;
+    --brass-pale:#f3e6c8;
+    --paper-white:#ffffff;
+    --ink-soft:#c3d0db;
+    --danger:#e2836a;
+    --good:#7fbf98;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html,body{height:100%;}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-serif;
+    background:var(--navy-950);
+    color:#eef2f5;
+    overflow:hidden;
+    -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3,h4{ font-family:'Avenir Next','Segoe UI',Arial,sans-serif; font-weight:600; letter-spacing:-0.01em; color:#fdfaf2; }
+  .mono{ font-family:SFMono-Regular,Consolas,'Liberation Mono',Menlo,monospace; }
+
+  /* subtle grain */
+  body::before{
+    content:""; position:fixed; inset:0; pointer-events:none; z-index:5000; opacity:.035;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  #deck{ position:relative; width:100%; height:100vh; }
+
+  .slide{
+    position:absolute; inset:0;
+    display:flex; flex-direction:column; justify-content:center;
+    padding:6vh 9vw;
+    opacity:0; visibility:hidden; transform:translateX(24px);
+    transition:opacity .45s ease, transform .45s ease;
+    background:radial-gradient(130% 110% at 14% 0%, #2a5266 0%, var(--navy-950) 58%);
+  }
+  .slide.active{ opacity:1; visibility:visible; transform:translateX(0); z-index:2; }
+  .slide.prev{ transform:translateX(-24px); }
+
+  .eyebrow{
+    font-family:SFMono-Regular,Consolas,'Liberation Mono',Menlo,monospace;
+    text-transform:uppercase; letter-spacing:.16em; font-size:clamp(11px,1vw,14px);
+    color:var(--brass-light); font-weight:600; margin-bottom:clamp(10px,2vh,20px); display:block;
+  }
+  .slide h2{ font-size:clamp(26px,3.6vw,46px); line-height:1.1; margin-bottom:clamp(14px,2.4vh,26px); max-width:1100px; }
+  .slide .lead{ font-size:clamp(14px,1.35vw,19px); color:#b9c9d3; max-width:900px; margin-bottom:clamp(16px,3vh,32px); line-height:1.5; }
+
+  .content{ max-width:1240px; width:100%; }
+
+  /* bullets */
+  ul.blt{ list-style:none; display:flex; flex-direction:column; gap:clamp(8px,1.6vh,16px); }
+  ul.blt li{
+    font-size:clamp(14px,1.3vw,19px); color:#dde6ec; line-height:1.45; padding-left:26px; position:relative;
+  }
+  ul.blt li::before{ content:"—"; position:absolute; left:0; color:var(--brass-light); }
+  ul.blt li b, ul.blt li strong{ color:#fff; }
+  ul.blt.cols{ display:grid; grid-template-columns:1fr 1fr; column-gap:40px; row-gap:10px; }
+
+  /* cards grid */
+  .cards{ display:grid; gap:clamp(10px,1.4vw,18px); }
+  .cards.c2{ grid-template-columns:1fr 1fr; }
+  .cards.c3{ grid-template-columns:1fr 1fr 1fr; }
+  .cards.c4{ grid-template-columns:repeat(4,1fr); }
+  .cardbox{
+    background:rgba(255,255,255,.05); border:1px solid rgba(226,189,120,.28);
+    border-radius:10px; padding:clamp(14px,1.6vw,22px);
+  }
+  .cardbox .tagnum{ font-family:SFMono-Regular,Consolas,'Liberation Mono',Menlo,monospace; font-size:clamp(10px,.85vw,12px); color:var(--brass-light); letter-spacing:.06em; display:block; margin-bottom:8px; text-transform:uppercase; }
+  .cardbox h4{ font-size:clamp(14px,1.3vw,18px); color:#fff; margin-bottom:8px; line-height:1.25; }
+  .cardbox p{ font-size:clamp(12.5px,1.1vw,15px); color:#b9c9d3; line-height:1.45; }
+  .cardbox p b, .cardbox p strong{ color:var(--brass-light); }
+
+  /* timeline */
+  .tl{ display:flex; flex-direction:column; gap:clamp(10px,1.8vh,18px); }
+  .tl .row{ display:flex; gap:20px; align-items:baseline; }
+  .tl .t{ font-family:SFMono-Regular,Consolas,'Liberation Mono',Menlo,monospace; font-size:clamp(11px,1vw,14px); color:var(--brass-light); font-weight:700; flex:0 0 140px; }
+  .tl .d{ font-size:clamp(13px,1.2vw,17px); color:#dde6ec; line-height:1.4; }
+  .tl .d b{ color:#fff; }
+
+  /* stats */
+  .stats{ display:flex; gap:clamp(12px,2vw,26px); flex-wrap:wrap; }
+  .stat{ border:1px solid rgba(226,189,120,.4); background:rgba(255,255,255,.04); padding:18px 24px; border-radius:8px; min-width:150px; }
+  .stat .num{ font-size:clamp(26px,3vw,40px); color:var(--brass-light); font-weight:700; font-family:'Avenir Next','Segoe UI',Arial,sans-serif; }
+  .stat .lbl{ font-size:clamp(11px,1vw,13px); color:#a9bbc7; margin-top:4px; }
+
+  .callout{ border-left:3px solid var(--brass); background:rgba(226,189,120,.1); padding:14px 20px; font-size:clamp(12.5px,1.1vw,15px); color:#e7d6ab; border-radius:0 8px 8px 0; }
+  .callout.danger{ border-color:var(--danger); background:rgba(226,131,106,.12); color:#f2c3b4; }
+  .callout.good{ border-color:var(--good); background:rgba(127,191,152,.12); color:#c9ecd6; }
+  .callout strong{ display:block; margin-bottom:4px; font-family:SFMono-Regular,Consolas,'Liberation Mono',Menlo,monospace; font-size:11px; letter-spacing:.05em; text-transform:uppercase; }
+
+  .rule{ height:1px; background:rgba(226,189,120,.22); margin:clamp(14px,2.4vh,26px) 0; }
+
+  .badge{ display:inline-flex; align-items:center; gap:6px; font-family:SFMono-Regular,Consolas,'Liberation Mono',Menlo,monospace; font-size:11px; letter-spacing:.04em; padding:4px 11px; border-radius:20px; font-weight:600; background:rgba(226,189,120,.16); color:var(--brass-light); margin-bottom:14px; }
+  .badge.draft{ background:rgba(226,131,106,.16); color:#f0a98d; }
+
+  /* title / agenda / closing slide specifics */
+  .slide.title{ align-items:flex-start; }
+  .mark{
+    width:52px; height:52px; border:1.6px solid var(--brass); border-radius:50%;
+    display:flex; align-items:center; justify-content:center; color:var(--brass-light);
+    font-size:20px; font-weight:650; margin-bottom:22px; position:relative;
+  }
+  .mark::before{ content:""; position:absolute; inset:-8px; border:1px solid rgba(191,138,60,.35); border-radius:50%; }
+  .title h1{ font-size:clamp(34px,5.4vw,62px); color:#fdfaf2; line-height:1.08; margin-bottom:18px; }
+  .title h1 em{ font-style:normal; color:var(--brass-light); }
+  .title .meta{ display:flex; gap:22px; flex-wrap:wrap; font-size:clamp(12px,1vw,14px); color:#a9bbc7; margin-top:26px; }
+  .title .meta b{ color:#fff; }
+
+  .agenda-list{ display:grid; grid-template-columns:1fr 1fr; gap:14px 34px; }
+  .agenda-list .aitem{ display:flex; gap:14px; align-items:baseline; }
+  .agenda-list .ax{ font-family:'Avenir Next','Segoe UI',Arial,sans-serif; font-size:22px; color:var(--brass); flex:none; width:34px; }
+  .agenda-list .at{ font-size:15px; color:#fff; font-weight:600; display:block; }
+  .agenda-list .ad{ font-size:12.5px; color:#a9bbc7; margin-top:2px; }
+
+  /* nav chrome */
+  #hud{
+    position:fixed; left:0; right:0; bottom:0; z-index:100;
+    display:flex; align-items:center; justify-content:space-between;
+    padding:14px 26px; pointer-events:none;
+  }
+  #hud > *{ pointer-events:auto; }
+  #dots{ display:flex; gap:6px; flex-wrap:wrap; max-width:60vw; }
+  .dot{ width:6px; height:6px; border-radius:50%; background:rgba(255,255,255,.22); cursor:pointer; transition:background .2s, transform .2s; }
+  .dot.on{ background:var(--brass-light); transform:scale(1.4); }
+  #counter{ font-family:SFMono-Regular,Consolas,'Liberation Mono',Menlo,monospace; font-size:12px; color:#89a0ae; letter-spacing:.05em; }
+  #controls{ display:flex; gap:8px; align-items:center; }
+  .navbtn{
+    width:38px; height:38px; border-radius:50%; border:1px solid rgba(226,189,120,.4);
+    background:rgba(255,255,255,.04); color:var(--brass-light); display:flex; align-items:center; justify-content:center;
+    cursor:pointer; transition:background .2s, transform .15s;
+  }
+  .navbtn:hover{ background:rgba(226,189,120,.14); }
+  .navbtn:active{ transform:scale(.92); }
+  #progressline{ position:fixed; top:0; left:0; height:3px; background:linear-gradient(90deg,var(--brass),var(--brass-light)); z-index:200; transition:width .3s ease; }
+
+  #hint{
+    position:fixed; top:20px; right:26px; z-index:100; font-size:11.5px; color:#7f95a3;
+    font-family:SFMono-Regular,Consolas,'Liberation Mono',Menlo,monospace; letter-spacing:.03em;
+    display:flex; gap:14px; align-items:center;
+  }
+  #hint kbd{ background:rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.15); border-radius:4px; padding:1px 6px; font-family:inherit; }
+  #fsBtn{ background:none; border:1px solid rgba(226,189,120,.4); color:var(--brass-light); border-radius:6px; padding:5px 10px; cursor:pointer; font-family:inherit; font-size:11px; }
+  #fsBtn:hover{ background:rgba(226,189,120,.12); }
+
+  .clickzone{ position:fixed; top:0; bottom:0; width:14%; z-index:50; cursor:pointer; }
+  .clickzone.left{ left:0; } .clickzone.right{ right:0; }
+
+  @media (max-width:820px){
+    .cards.c2,.cards.c3,.cards.c4{ grid-template-columns:1fr 1fr; }
+    .agenda-list{ grid-template-columns:1fr; }
+    ul.blt.cols{ grid-template-columns:1fr; }
+    #hint{ display:none; }
+  }
+  @media (max-width:560px){
+    .cards.c2,.cards.c3,.cards.c4{ grid-template-columns:1fr; }
+    .slide{ padding:8vh 7vw; }
+  }
+  @media (prefers-reduced-motion: reduce){ .slide{ transition:none; } }
+</style>
+</head>
+<body>
+
+<div id="progressline" style="width:0%"></div>
+<div id="hint"><span><kbd>&larr;</kbd><kbd>&rarr;</kbd> навигация</span><span><kbd>F</kbd> экран</span><span><kbd>Esc</kbd> выход</span><button id="fsBtn" type="button">Во весь экран</button></div>
+
+<div id="deck"></div>
+
+<div class="clickzone left" id="czLeft" aria-label="Предыдущий слайд"></div>
+<div class="clickzone right" id="czRight" aria-label="Следующий слайд"></div>
+
+<div id="hud">
+  <div id="controls">
+    <div class="navbtn" id="prevBtn" role="button" aria-label="Назад">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+    </div>
+    <div class="navbtn" id="nextBtn" role="button" aria-label="Вперёд">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+    </div>
+    <span id="counter">01 / 26</span>
+  </div>
+  <div id="dots"></div>
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  function el(html){ var d=document.createElement('div'); d.innerHTML=html.trim(); return d.firstChild; }
+
+  var slides = [];
+
+  // ============ 1. TITLE ============
+  slides.push({cls:'title', html:
+    '<div class="mark">SK</div>'+
+    '<span class="eyebrow">Обучающий семинар · ТОО «Самрук-Казына Контракт» · ИСЭЗ</span>'+
+    '<h1>Порядок<br>осуществления <em>закупок</em></h1>'+
+    '<p class="lead" style="max-width:760px;">Планирование, способы закупок, тендерная документация, оценка заявок, договор и ключевые изменения 2026 года — карта закупочного процесса Фонда.</p>'+
+    '<div class="meta"><span>Спикер: <b>Айып А.</b></span><span>Редакция: <b>2.17 · 30.04.2026 · СД №274</b></span><span>Сверка материала: <b>17.08.2026</b></span></div>'
+  });
+
+  // ============ 2. AGENDA ============
+  slides.push({eyebrow:'Программа семинара', title:'О чём сегодня', html:
+    '<div class="agenda-list">'+
+      agendaItem('01','Как устроена закупка','Три этапа: планирование → выбор поставщика → договор')+
+      agendaItem('02','Планирование','План закупок, сроки, однородность ТРУ, ОКТРУ и НКТ')+
+      agendaItem('03','Способы закупок','4 действующих способа и отдельный механизм ПКО')+
+      agendaItem('04','Реестры и приоритеты','Товаропроизводители, организации инвалидов, КПП и ненадёжные поставщики')+
+      agendaItem('05','Тендер: сроки и документация','Порядок проведения, Приложение №5, техническая спецификация')+
+      agendaItem('06','Оценка заявок','Условные скидки, антидемпинг, обеспечение, основания отклонения')+
+      agendaItem('07','Договор и поставщики','Заключение, исполнение, изменение договора и перечень ненадёжных')+
+      agendaItem('08','Изменения 2026 года','Протокол №269, Протокол №274 и проект «Астана Хаб» (ожидается IX.2026)')+
+    '</div>'
+  });
+  function agendaItem(n,t,d){ return '<div class="aitem"><span class="ax">'+n+'</span><span><span class="at">'+t+'</span><span class="ad">'+d+'</span></span></div>'; }
+
+  // ============ 3. THREE STAGES ============
+  slides.push({eyebrow:'01 / Жизненный цикл — реальная последовательность', title:'Три этапа закупки', html:
+    '<div class="cards c3">'+
+      card('Этап 1','Планирование','Формирование и утверждение плана(ов) закупок · годовой и долгосрочный ПЗ · предварительный годовой план закупок.')+
+      card('Этап 2','Выбор поставщика','Тендер · Запрос ценовых предложений · один источник · электронный магазин. <b>Товарные биржи исключены с 26.05.2025.</b>')+
+      card('Этап 3','Заключение и исполнение договора','Корректировка проекта договора · изменение действующего договора · мониторинг исполнения.')+
+    '</div>'
+  });
+
+  // ============ 4. PLANNING ============
+  slides.push({eyebrow:'02 / Прежде чем закупать', title:'Планирование закупок', html:
+    '<p class="lead">Закупочные процедуры проводятся по позициям утверждённого плана. Маркетинговая цена определяется ПК/Фондом по Корпоративному стандарту стратегического и бизнес-планирования.</p>'+
+    '<div class="tl">'+
+      tlRow('ШАГ 1','Проверьте периметр — это закупка в Системе, не Особый порядок, не командировочные, не услуги физлиц.')+
+      tlRow('ШАГ 2','Определите период — долгосрочная или годовая закупка с привязкой к бюджету/программе.')+
+      tlRow('ШАГ 3','Оцените однородность ТРУ — определяет способ закупки и разбивку на лоты.')+
+      tlRow('ШАГ 4','Определите режим приоритета — товаропроизводители, организации инвалидов, ПО/электроника.')+
+      tlRow('ШАГ 5','Заполните и утвердите план — ЭЦП первого руководителя в Системе.')+
+    '</div>'+
+    '<div class="rule"></div>'+
+    '<div class="cards c2">'+
+      cardCallout('good','Лимит корректировок — с 10.05.2023','Не более 4 раз в месяц, кроме случаев п. 7-1 ст. 12.')+
+      cardCallout('danger','Минимальные сроки поставки','Не менее 60 к.дн. при тендере среди товаропроизводителей; не менее 120 к.дн. для сложных/критически важных товаров.')+
+    '</div>'
+  });
+  function tlRow(t,d){ return '<div class="row"><span class="t">'+t+'</span><span class="d">'+d+'</span></div>'; }
+
+  // ============ 5. OKTRU / NKT ============
+  slides.push({eyebrow:'02 / Редакция №274', title:'ОКТРУ и НКТ — новая классификация', html:
+    '<p class="lead">В zakup.sk.kz наряду с ЕНС ТРУ применяются два государственных справочника с nct.gov.kz. ОКТРУ указывается в плане, НКТ — поставщиком в актах поставки.</p>'+
+    '<div class="cards c2">'+
+      card('1 · ОКТРУ','Общий классификатор товаров, работ, услуг','Иерархический код из четырёх уровней. Заполняется в Системе при планировании позиции. <span class="mono">1071-0001-0001-100043045</span>')+
+      card('2 · НКТ','Национальный каталог товаров','Проект договора и оферта электронного магазина должны предусматривать указание в акте поставки уникального кода из НКТ.')+
+    '</div>'+
+    '<div class="rule"></div>'+
+    '<div class="callout"><strong>Что это значит на практике</strong>В редакции №274 ОКТРУ и НКТ закреплены в Порядке. В формах планов появились поля ОКТРУ, в документах по поставке — требование о коде НКТ.</div>'
+  });
+
+  // ============ 6. METHODS ============
+  slides.push({eyebrow:'03 / Статья 29 Порядка', title:'Способы закупок — 4 действующих', html:
+    '<div class="cards c2">'+
+      card('Способ 01','Тендер','Основной конкурентный инструмент: открытый и двухэтапный (открытый), тендер на понижение, тендер с ограниченным участием.')+
+      card('Способ 02','Запрос ценовых предложений','Если сумма ТРУ по плану на год без НДС не превышает <b>10 000 МРП</b>. Дробление для обхода порога не допускается.')+
+      card('Способ 03','Из одного источника','Исключительный способ по основаниям ст. 59. Лицо, принявшее решение, несёт персональную ответственность.')+
+      card('Способ 04','Электронный магазин','Сумма однородных ТРУ по плану — до <b>20 000 МРП</b> без НДС, только по категориям, утверждённым Правлением Фонда.')+
+    '</div>'+
+    '<div class="rule"></div>'+
+    '<div class="callout danger"><strong>Историческая норма</strong>Товарные биржи исключены из перечня способов закупок с 26.05.2025 — в статье 29 их больше нет.</div>'
+  });
+
+  // ============ 7. REGISTRIES ============
+  slides.push({eyebrow:'04 / Актуальная система реестров', title:'Реестры, перечни и статусы поставщиков', html:
+    '<p class="lead">С 2026 года прежние Реестр товаропроизводителей Фонда и Реестр ОИН исключены (01.01.2026).</p>'+
+    '<ul class="blt cols">'+
+      '<li><b>Реестр казахстанских товаропроизводителей</b> — действует с 01.01.2026, определяет статус для приоритетов и льгот.</li>'+
+      '<li><b>Организация инвалидов</b> — статус связан с Реестром товаропроизводителей и автопроверкой условий.</li>'+
+      '<li><b>Реестр КПП</b> — квалифицированные потенциальные поставщики, формирует Квалификационный орган.</li>'+
+      '<li><b>Перечень ненадёжных</b> — недостоверная информация, уклонение от договора, невнесение обеспечения; срок включения — 24 месяца.</li>'+
+    '</ul>'+
+    '<div class="rule"></div>'+
+    '<div class="callout good"><strong>Главная замена 2026 года</strong>В старых инструкциях ссылки на Реестр ТПФ и Реестр ОИН Фонда нужно сопоставлять с действующей редакцией Порядка.</div>'
+  });
+
+  // ============ 8. PRIORITIES ============
+  slides.push({eyebrow:'05 / Статья 29 · режимы приоритета', title:'Приоритеты в закупках', html:
+    '<p class="lead">Не единая «лестница приоритетов», а отдельные режимы для разных предметов и способов закупки.</p>'+
+    '<div class="tl">'+
+      tlRow('РЕЖИМ 1','Доверенное ПО и электронная промышленность — закупка через ЭМ с приоритетом производителей.')+
+      tlRow('РЕЖИМ 2','Организации инвалидов, производящие закупаемый товар — приоритет по перечню Оператора Фонда.')+
+      tlRow('РЕЖИМ 3','Товаропроизводители закупаемого товара — при тендере и ЗЦП, если есть один и более товаропроизводитель.')+
+    '</div>'+
+    '<div class="rule"></div>'+
+    '<div class="callout danger"><strong>Историческая норма</strong>П. 9 ст. 29 исключён с 01.01.2026 — старое правило о запрете приоритета вне реестра не переносить в текущие инструкции.</div>'
+  });
+
+  // ============ 9. TENDER FLOW ============
+  slides.push({eyebrow:'06 / От заявления до допуска', title:'Порядок и сроки проведения тендера', html:
+    '<div class="tl">'+
+      tlRow('5 РАБ. ДН','Предварительное обсуждение ТД — замечания поставщиков и НПП; при наличии — протокол и +2 р.д.')+
+      tlRow('10 КАЛ. ДН','Приём тендерных заявок — минимальный срок; 5 к.дн. при повторных закупках.')+
+      tlRow('10–15 РАБ. ДН','Рассмотрение заявок — продление до +20 р.д. на запрос органам, до +10 р.д. на выезд для осмотра.')+
+      tlRow('2–5 РАБ. ДН','Устранение несоответствий — 2 р.д. по общему правилу, 5 р.д. по образцам товара.')+
+      tlRow('12 РАБ. ДН','Заключение договора — с публикации итогов (нерезидент — 14 р.д.).')+
+    '</div>'
+  });
+
+  // ============ 10. TENDER DOCS ============
+  slides.push({eyebrow:'07 / Приложение №5 к Порядку', title:'Состав тендерной документации', html:
+    '<div class="cards c2">'+
+      card('п.4','Опыт работы поставщика','Не более 5 лет, лоты свыше 75 млн ₸. Нельзя требовать одновременно с финансовой устойчивостью.')+
+      card('п.5','Требования к специалистам','Опыт не более 5 лет, учитывается за последние 10 лет (с 30.10.2024).')+
+      card('п.8','Наличие оборудования, техники, ПО','Только в предусмотренных Приложением №5 случаях — опасные объекты, ПСД для СМР, закупки свыше 250 млн ₸.')+
+      card('п.36','Финансовая устойчивость','<span class="mono">Не действует в 2026 году</span> — строка действовала до 31.12.2025.')+
+    '</div>'+
+    '<div class="rule"></div>'+
+    '<div class="cards c2">'+
+      cardCallout('danger','Частые нарушения в ТС','Разночтения между казахским и русским текстом · разночтения в сроках поставки · требования к поставщику внутри ТС.')+
+      cardCallout('danger','Частые нарушения в ТД','Отсутствие перевода приложений · требование, не предусмотренное Порядком · разночтения между договором и ТС.')+
+    '</div>'
+  });
+
+  // ============ 11. TECH SPEC ============
+  slides.push({eyebrow:'08 / Язык описания предмета закупки', title:'Техническая спецификация: 4 типа характеристик', html:
+    '<div class="cards c2">'+
+      card('Функциональные','Что должен делать предмет закупки','«ИБП защищает серверное оборудование от провалов напряжения и переводит нагрузку на батарею.»')+
+      card('Качественные','Какими качествами обладает — без цифр','«Корпус монитора — ударопрочный пластик с матовым антибликовым покрытием.»')+
+      card('Технические','Требования, выраженные в цифрах','«Коммутатор — 24 порта 1 Гбит/с, 2 порта SFP+ 10 Гбит/с.»')+
+      card('Эксплуатационные','Комплекс эксплуатационных возможностей','«Рабочая температура от 0 до +45°C, наработка на отказ не менее 50 000 часов.»')+
+    '</div>'+
+    '<div class="rule"></div>'+
+    '<div class="callout good"><strong>С 30.06.2024</strong>Поставщик не «предоставляет» ТС, а соглашается с ТС Заказчика; допускается альтернативная ТС со скидкой.</div>'
+  });
+
+  // ============ 12. DISCOUNTS + ANTIDUMPING ============
+  slides.push({eyebrow:'09–10 / Приложение №5 · оценка заявок', title:'Условные скидки и антидемпинговые пороги', html:
+    '<ul class="blt cols">'+
+      '<li><b>Товаропроизводитель:</b> −5% условно (не применяется при закупке среди товаропроизводителей)</li>'+
+      '<li><b>Опыт на рынке 5 лет:</b> −1,5% за 3 года, +0,5% за год, максимум −2,5%</li>'+
+      '<li><b>Зарплата выше порога ТД:</b> −3% / −4% / −5% при +10% / +15% / +20%</li>'+
+      '<li><b>Статус СМСП:</b> −1%</li>'+
+    '</ul>'+
+    '<div class="rule"></div>'+
+    '<div class="cards c4">'+
+      card('СМР по ПСД','порог демпинга','более чем на 5% ниже плана')+
+      card('Консульт. услуги','порог демпинга','более чем на 70% ниже среднего')+
+      card('Иные работы/услуги','порог демпинга','более чем на 20% ниже среднего')+
+      card('Товары','с 31.01.2025','более чем на 15% ниже среднего')+
+    '</div>'
+  });
+
+  // ============ 13. SECURITY + REJECTION ============
+  slides.push({eyebrow:'11–12 / Ст. 36 · когда заявку не пропустят', title:'Обеспечение заявки и основания отклонения', html:
+    '<div class="cards c3">'+
+      card('Размер','Не более 1% суммы закупки','Определяется тендерной документацией.')+
+      card('Возврат','В течение 10 рабочих дней','При наступлении оснований статьи 36.')+
+      card('Освобождены','Не вносят обеспечение','Фонд · организации инвалидов, производящие товар · КПП · товаропроизводители.')+
+    '</div>'+
+    '<div class="rule"></div>'+
+    '<ul class="blt cols">'+
+      '<li>Несоответствие требованиям к содержанию заявки</li>'+
+      '<li>Аффилированность участников тендера/лота</li>'+
+      '<li>Цена превышает выделенную сумму</li>'+
+      '<li>Ценовое предложение признано демпинговым</li>'+
+      '<li>Поставщик — в «чёрных» перечнях</li>'+
+      '<li>Недостоверная информация в заявке</li>'+
+    '</ul>'
+  });
+
+  // ============ 14. FAILED TENDER + ZCP ============
+  slides.push({eyebrow:'13–14 / Ст. 43, 49–55', title:'Несостоявшийся тендер и запрос ценовых предложений', html:
+    '<div class="cards c2">'+
+      card('Тендер не состоялся, если','—','Нет заявок · менее двух заявок (кроме п.3 ст.43) · не осталось нужного количества соответствующих заявок · победитель и второе место уклонились.')+
+      card('Что может Заказчик','—','Повторно провести открытый тендер · изменить условия и повторить · провести тендер с ограниченным участием.')+
+    '</div>'+
+    '<div class="rule"></div>'+
+    '<p class="lead" style="margin-bottom:14px;">ЗЦП — по общему стоимостному основанию, если сумма ТРУ по плану без НДС не превышает <b>10 000 МРП</b>.</p>'+
+    '<div class="callout"><strong>Ключевые ограничения</strong>Не допускается дробление однородных ТРУ · ЗЦП не применяется для СМР по ПСД · для ЗЦП на понижение — дополнительные ограничения ст. 56.</div>'
+  });
+
+  // ============ 15. ONE SOURCE ============
+  slides.push({eyebrow:'15 / Ст. 59 Порядка', title:'Закупки из одного источника', html:
+    '<p class="lead">Допускаются только, если применение конкурентного способа невозможно (кроме внутрихолдинговых, соц.стабильности и закупок до 1000 МРП).</p>'+
+    '<div class="cards c3">'+
+      card('01–08','Монополии и интеллектуальная собственность','Естественные монополии · обладатель исключительных прав ИС · офтейк-контракты.')+
+      card('09–14','Экстренные ситуации','ЧП/ЧС · исполнение обязательств по договорам · поручения Президента РК.')+
+      card('15–21','Внутрихолдинговые закупки','Рейтинговые агентства · внутрихолдинговая кооперация · ТРУ до 1000 МРП.')+
+    '</div>'+
+    '<div class="rule"></div>'+
+    '<div class="callout danger"><strong>Обязательное согласование с комплаенс</strong>Основания 1 (абз.4), 6, 11, 14 — а также офшорные учредители/акционеры поставщика.</div>'
+  });
+
+  // ============ 16. E-SHOP ============
+  slides.push({eyebrow:'16 / Статья 58 Порядка', title:'Электронный магазин', html:
+    '<div class="cards c2">'+
+      card('Параметры','—','Сумма однородных ТРУ по плану — до <b>20 000 МРП</b> без НДС · только по утверждённым категориям · победитель — автоматически по наименьшей цене · требуется код НКТ в акте.')+
+      card('Ключевые сроки','—','Предложения: 3–24 часа · подписание заказа — до 3 р.д. · договор по работам/услугам — 4 р.д. · расчёт — до 5 р.д.')+
+    '</div>'+
+    '<div class="rule"></div>'+
+    '<div class="callout good"><strong>Доверенное ПО и электронная промышленность</strong>Если товар/ИКТ-услуга в профильном реестре и есть в ЭМ — закупка через ЭМ с приоритетом производителя, лимит п.1 ст.58 не применяется.</div>'
+  });
+
+  // ============ 17. CONTRACT ============
+  slides.push({eyebrow:'17 / После определения победителя', title:'Заключение и изменение договора', html:
+    '<div class="cards c4">'+
+      card('Тендер / ЗЦП','12 рабочих дней','С даты публикации итогов; нерезидент — 14 р.д.')+
+      card('Общий расчёт','≤ 30 календарных дней','С даты подписания актов, если иное не определено ЗКС.')+
+      card('Товаропроизводитель','30% + 10 дней','Предоплата не менее 30%, выплата не позднее 10 к.дн.')+
+      card('Штрафы товаропроизводителю','≤ 10%','Общий размер штрафов за просрочку поставки.')+
+    '</div>'+
+    '<div class="rule"></div>'+
+    '<ul class="blt cols">'+
+      '<li>Снижение цены при падении рыночных цен на ТРУ</li>'+
+      '<li>Увеличение объёма не более чем на 50% — по цене договора</li>'+
+      '<li>Рост стоимости сырья &gt;10% — маркетинговое заключение, не чаще 1 р/кв. и 2 р/год</li>'+
+      '<li>Изменения налогового/таможенного законодательства — не чаще 1 раза в год</li>'+
+    '</ul>'
+  });
+
+  // ============ 18. UNRELIABLE ============
+  slides.push({eyebrow:'18 / Статья 26 Порядка', title:'Перечень ненадёжных поставщиков', html:
+    '<div class="cards c3">'+
+      card('20 р.д.','Срок Заказчика','С даты обнаружения факта ненадёжности, кроме случая п.3-1 ст.66.')+
+      card('24 мес.','Срок включения','Поставщик включается в Перечень на 24 месяца.')+
+      card('10 р.д.','Решение Оператора','По общему правилу после получения документов.')+
+    '</div>'+
+    '<div class="rule"></div>'+
+    '<div class="cards c2">'+
+      cardCallout('danger','Критический срок','Информация, поступившая после 20-рабочего-дневного срока, не подлежит рассмотрению Оператором.')+
+      cardCallout('good','П. 3-1 ст. 66','Поставщик не вносится в Перечень при одновременном: договор исполнен, ущерба нет, неустойка уплачена.')+
+    '</div>'
+  });
+
+  // ============ 19. CHANGES OVERVIEW ============
+  slides.push({eyebrow:'19 / Что реально изменилось и как это применять', title:'Изменения 2026 года — две волны и один проект', html:
+    '<p class="lead">Протокол №269 перенёс маркетинговую цену в корпоративное бизнес-планирование. Протокол №274 ввёл ОКТРУ и НКТ и ужесточил правила по ненадёжным поставщикам. Готовится третий пакет — проект о приоритете «Астана Хаб» в ИКТ-закупках.</p>'+
+    '<div class="cards c3">'+
+      card('Протокол №269','18.02.2026 · вступил в силу 10.03.2026','Маркетинговая цена по Корпоративному стандарту, исключение главы 6 / ст.13 / Приложения №3.')+
+      card('Протокол №274','30.04.2026 · вступил в силу 25.05.2026','ОКТРУ, НКТ, жёсткий 20-дневный срок по ненадёжным. Довёл редакцию до версии 2.17.')+
+      card('Проект «Астана Хаб»','рассмотрение СД ожидается IX.2026','Реестр доверенных цифровых объектов и приоритет участникам «Астана Хаб» в ИКТ-закупках.')+
+    '</div>'
+  });
+
+  // ============ 20. PROTOCOL 269 ============
+  slides.push({eyebrow:'Протокол №269 · вступил в силу 10.03.2026', title:'Маркетинговая цена — вне отдельной методики Порядка', html:
+    '<ul class="blt">'+
+      '<li><b>Определение изменено</b> — маркетинговая цена определяется ПК/Фондом по Корпоративному стандарту стратегического и бизнес-планирования.</li>'+
+      '<li><b>Исключены глава 6, статья 13, Приложение №3</b> — собственная закупочная методика маркетинговой цены в Порядке больше не действует.</li>'+
+      '<li><b>Предварительный план</b> — уточнены формы (Приложения №1 и №2), включая долгосрочный план.</li>'+
+      '<li><b>Статья 65</b> — источник маркетингового заключения при изменении цены договора теперь Корпоративный стандарт, а не исключённое Приложение №3.</li>'+
+      '<li><b>Также</b> — углеродные единицы (офсеты) добавлены в статью 73, точечные правки Приложения №12.</li>'+
+    '</ul>'+
+    '<div class="rule"></div>'+
+    '<div class="callout danger"><strong>Практика</strong>Нельзя требовать действия «по статье 13 Порядка» после 10.03.2026 — такой статьи в действующей части уже нет.</div>'
+  });
+
+  // ============ 21. PROTOCOL 274 ============
+  slides.push({eyebrow:'Протокол №274 · вступил в силу 25.05.2026 · версия 2.17', title:'ОКТРУ + НКТ и дисциплина по ненадёжным поставщикам', html:
+    '<ul class="blt cols">'+
+      '<li><b>ОКТРУ</b> — закреплён в пп. 8-1 ст. 2, поля в Приложениях №1 и №2.</li>'+
+      '<li><b>НКТ</b> — «уникальный код из Национального каталога товаров» в акте поставки.</li>'+
+      '<li><b>Код НКТ в акте</b> — требование в оферте ЭМ (ст.58 п.6) и в проекте договора (ст.61 п.20).</li>'+
+      '<li><b>20 рабочих дней</b> — просроченные сведения о ненадёжном поставщике не рассматриваются (ст.26 п.15).</li>'+
+      '<li><b>П. 3-1 ст. 66</b> — исключение из Перечня только при трёх условиях одновременно: договор исполнен, ущерба нет, неустойка уплачена.</li>'+
+      '<li><b>10 / 60 дней</b> — согласительная комиссия: 10 р.д. от даты, когда узнал, но не позднее 60 к.дн. со дня включения.</li>'+
+    '</ul>'+
+    '<div class="rule"></div>'+
+    '<div class="callout"><strong>Практика</strong>Контролируются сразу два срока по согласительной комиссии — соблюдение 10 р.д. не спасает при истечении абсолютных 60 к.дн.</div>'
+  });
+
+  // ============ 22. DRAFT ASTANA HUB — OVERVIEW ============
+  slides.push({eyebrow:'Проект · рассмотрение СД ожидается в сентябре 2026', title:'Проект: «Астана Хаб» и реестр доверенных цифровых объектов', html:
+    '<span class="badge draft">⚠ Проект изменения · ещё не утверждено</span>'+
+    '<p class="lead">Готовится в связи со вступлением в силу Цифрового кодекса РК (12.07.2026) и поручением по повышению привлекательности «Астана Хаб» (поручение №10829 ПАБ-6 от 18.11.2025, дорожная карта МИИЦР от 19.12.2025). Пилот предлагается до 01.07.2027 — точный срок закрепит решение Совета директоров.</p>'+
+    '<div class="cards c2">'+
+      card('Термины','—','«Производители доверенных цифровых объектов» вместо «производители ПО и электроники»; новое понятие «участники Астана Хаб» (пп. 69-1 ст.2).')+
+      card('Перечень работ и услуг','—','Утверждает Экспертный совет по ИТ Фонда по согласованию с «Астана Хаб»; молчание 15 р.д. = согласие.')+
+      card('Способы закупки ИКТ','—','ЭМ — только товары из реестра ДЦО. Услуги — ЗЦП без лимита: сначала приоритет ДЦО, затем «Астана Хаб».')+
+      card('Контроль','—','Автоотклонение заявок вне реестра/перечня (ст.50 п.5); проверка по БИН.')+
+    '</div>'
+  });
+
+  // ============ 23. DRAFT ASTANA HUB — DETAILS ============
+  slides.push({eyebrow:'Проект «Астана Хаб» · продолжение', title:'Что меняется по статьям (проект)', html:
+    '<ul class="blt cols">'+
+      '<li><b>Ст. 29 п.3, 3-1, 3-2</b> — товары через ЭМ (реестр ДЦО), услуги через ЗЦП с двухуровневым приоритетом.</li>'+
+      '<li><b>Ст. 29 п.8</b> — правило о повторных закупках сужается до пп. 3, 5, 6; для 3-1/3-2 — своя логика.</li>'+
+      '<li><b>Ст. 37 п.4</b> — Заказчик сможет ограничить ЗЦП производителями ДЦО и/или участниками «Астана Хаб».</li>'+
+      '<li><b>Ст. 49 п.1</b> — для ИКТ-услуг снимается лимит 10 000 МРП (пп. 3-1, 3-2).</li>'+
+      '<li><b>Ст. 58 п.1, 5-1</b> — исключение из лимита ЭМ остаётся только для товаров из реестра ДЦО.</li>'+
+      '<li><b>Ст. 58 п.9</b> — при равенстве цен «Заказчик вправе» → «Заказчик осуществляет закупку» (обязывающая формулировка).</li>'+
+    '</ul>'+
+    '<div class="rule"></div>'+
+    '<div class="callout danger"><strong>Отдельный риск, отмеченный Фондом</strong>Ограничение участия нерезидентов в закупках «Астана Хаб» может повлиять на оценку системы закупок Фонда со стороны ЕБРР, АБР, Всемирного банка — поэтому ограничения предлагается закрепить не в самом Порядке, а в документах о формировании Перечня.</div>'
+  });
+
+  // ============ 24. NUMBERS TO REMEMBER ============
+  slides.push({eyebrow:'Цифры 2026, которые полезно держать в голове', title:'Ключевые пороги и сроки', html:
+    '<div class="stats">'+
+      stat('4','действующих способа закупок')+
+      stat('10 000','МРП · базовый порог ЗЦП')+
+      stat('20 000','МРП · лимит электронного магазина')+
+      stat('24','месяца · срок в Перечне ненадёжных')+
+      stat('20','раб. дней на сведения о ненадёжном поставщике')+
+      stat('10 / 60','согласительная комиссия: р.д. / к.дн.')+
+    '</div>'
+  });
+  function stat(n,l){ return '<div class="stat"><div class="num">'+n+'</div><div class="lbl">'+l+'</div></div>'; }
+
+  // ============ 25. HOW TO CONNECT ============
+  slides.push({eyebrow:'Как связать изменения с лекцией', title:'Единая логика 2026 года', html:
+    '<p class="lead" style="font-size:clamp(16px,1.6vw,22px); max-width:1000px;">План и классификация → маркетинговая цена по Корпоративному стандарту → ОКТРУ/НКТ → исполнение → сроки по Перечню ненадёжных.</p>'+
+    '<div class="rule"></div>'+
+    '<p style="font-size:clamp(13px,1.15vw,16px); color:#c3d0db; max-width:920px; line-height:1.6;">Протокол №269 и Протокол №274 — не два отдельных документа, а поправки, встроенные в конкретные этапы закупочного процесса. Проект «Астана Хаб» — следующий шаг именно в способах закупки ИКТ-услуг: пока не норма, но его стоит держать в поле зрения до решения Совета директоров.</p>'
+  });
+
+  // ============ 26. CLOSING ============
+  slides.push({cls:'title', html:
+    '<span class="eyebrow">Спасибо за внимание</span>'+
+    '<h1>Вопросы по<br><em>закупочному процессу?</em></h1>'+
+    '<p class="lead" style="max-width:640px;">Департамент ИСЭЗ</p>'+
+    '<div class="meta"><span>Email: <b>a.aiyp@skc.kz</b></span></div>'+
+    '<div class="rule" style="width:100%;"></div>'+
+    '<p style="font-size:12px; color:#7f95a3;" class="mono">АО «Самрук-Казына» · Порядок осуществления закупок · версия 2.17 · редакция от 30.04.2026 (СД №274)</p>'
+  });
+
+  function card(tag,title,text){ return '<div class="cardbox"><span class="tagnum">'+tag+'</span>'+(title&&title!=='—'?'<h4>'+title+'</h4>':'')+'<p>'+text+'</p></div>'; }
+  function cardCallout(type,title,text){ return '<div class="callout '+type+'"><strong>'+title+'</strong>'+text+'</div>'; }
+
+  // ============ RENDER ============
+  var deck = document.getElementById('deck');
+  var total = slides.length;
+  slides.forEach(function(s, i){
+    var sec = document.createElement('section');
+    sec.className = 'slide' + (s.cls ? ' '+s.cls : '');
+    sec.dataset.index = i;
+    var inner = '';
+    if(s.eyebrow) inner += '<span class="eyebrow">'+s.eyebrow+'</span>';
+    if(s.title) inner += '<h2>'+s.title+'</h2>';
+    inner += '<div class="content">'+s.html+'</div>';
+    sec.innerHTML = inner;
+    deck.appendChild(sec);
+  });
+
+  var dotsWrap = document.getElementById('dots');
+  slides.forEach(function(_, i){
+    var d = document.createElement('div');
+    d.className = 'dot';
+    d.addEventListener('click', function(){ goTo(i); });
+    dotsWrap.appendChild(d);
+  });
+  var dots = dotsWrap.children;
+
+  var current = 0;
+  var slideEls = deck.children;
+  var counter = document.getElementById('counter');
+  var progressline = document.getElementById('progressline');
+
+  function pad(n){ return n<10 ? '0'+n : ''+n; }
+
+  function render(){
+    for(var i=0;i<slideEls.length;i++){
+      slideEls[i].classList.remove('active','prev');
+      if(i===current) slideEls[i].classList.add('active');
+      else if(i<current) slideEls[i].classList.add('prev');
+    }
+    for(var j=0;j<dots.length;j++){
+      dots[j].classList.toggle('on', j===current);
+    }
+    counter.textContent = pad(current+1)+' / '+pad(total);
+    progressline.style.width = (((current+1)/total)*100)+'%';
+  }
+
+  function goTo(i){
+    if(i<0 || i>=total) return;
+    current = i;
+    render();
+  }
+  function next(){ goTo(Math.min(current+1, total-1)); }
+  function prev(){ goTo(Math.max(current-1, 0)); }
+
+  document.getElementById('nextBtn').addEventListener('click', next);
+  document.getElementById('prevBtn').addEventListener('click', prev);
+  document.getElementById('czLeft').addEventListener('click', prev);
+  document.getElementById('czRight').addEventListener('click', next);
+
+  document.addEventListener('keydown', function(e){
+    if(e.key==='ArrowRight' || e.key===' ' || e.key==='PageDown'){ e.preventDefault(); next(); }
+    else if(e.key==='ArrowLeft' || e.key==='PageUp'){ e.preventDefault(); prev(); }
+    else if(e.key==='Home'){ goTo(0); }
+    else if(e.key==='End'){ goTo(total-1); }
+    else if(e.key==='f' || e.key==='F'){ toggleFullscreen(); }
+    else if(e.key==='Escape' && document.fullscreenElement){ document.exitFullscreen(); }
+  });
+
+  // swipe
+  var touchX = null;
+  document.addEventListener('touchstart', function(e){ touchX = e.touches[0].clientX; }, {passive:true});
+  document.addEventListener('touchend', function(e){
+    if(touchX===null) return;
+    var dx = e.changedTouches[0].clientX - touchX;
+    if(Math.abs(dx) > 50){ dx < 0 ? next() : prev(); }
+    touchX = null;
+  }, {passive:true});
+
+  function toggleFullscreen(){
+    if(!document.fullscreenElement){ document.documentElement.requestFullscreen().catch(function(){}); }
+    else{ document.exitFullscreen(); }
+  }
+  document.getElementById('fsBtn').addEventListener('click', toggleFullscreen);
+
+  render();
+})();
+</script>
+</body>
+</html>

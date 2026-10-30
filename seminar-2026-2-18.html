@@ -1091,7 +1091,7 @@
 
 <style id="intro-navigation-controls">
 /* Fragment navigation is the default control, including when scripts are disabled. */
-#introOverlay{display:flex!important;z-index:10010!important;}
+body > #introOverlay{display:flex!important;z-index:10010!important;}
 #seminarContent:target ~ #introOverlay,
 #introOverlay[hidden]{display:none!important;}
 #seminarContent:has(:target) ~ #introOverlay{display:none!important;}
